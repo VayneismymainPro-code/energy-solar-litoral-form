@@ -1,8 +1,15 @@
 const loginForm = document.getElementById('login-form');
+const inviteForm = document.getElementById('invite-form');
 const section = document.getElementById('orders-section');
 const list = document.getElementById('orders-list');
 const status = document.getElementById('admin-status');
 const imageUrls = [];
+let inviteToken = new URLSearchParams(location.hash.slice(1)).get('invite_token');
+if (inviteToken) {
+  history.replaceState(null, '', location.pathname + location.search);
+  loginForm.hidden = true;
+  inviteForm.hidden = false;
+}
 
 function addText(parent, tag, label, value) {
   const element = document.createElement(tag);
@@ -70,6 +77,30 @@ loginForm.addEventListener('submit', async event => {
   } catch (error) { status.textContent = error.message; }
 });
 
+inviteForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const fields = new FormData(inviteForm);
+  const password = String(fields.get('password') || '');
+  if (password !== fields.get('confirm')) {
+    status.textContent = 'As senhas não coincidem.';
+    return;
+  }
+  status.textContent = 'Ativando acesso…';
+  try {
+    const response = await fetch('/api/accept-invite', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: inviteToken, password })
+    });
+    if (!response.ok) throw new Error('Convite inválido ou expirado. Peça um novo convite.');
+    inviteToken = null;
+    inviteForm.reset();
+    inviteForm.hidden = true;
+    loginForm.hidden = false;
+    await loadOrders();
+    if (section.hidden) status.textContent = 'Acesso ativado. Entre com sua nova senha.';
+  } catch (error) { status.textContent = error.message; }
+});
+
 document.getElementById('logout-button').addEventListener('click', async () => {
   await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
   imageUrls.splice(0).forEach(url => URL.revokeObjectURL(url));
@@ -79,4 +110,4 @@ document.getElementById('logout-button').addEventListener('click', async () => {
   status.textContent = '';
 });
 
-loadOrders().catch(() => { status.textContent = 'Não foi possível carregar os pedidos.'; });
+if (!inviteToken) loadOrders().catch(() => { status.textContent = 'Não foi possível carregar os pedidos.'; });

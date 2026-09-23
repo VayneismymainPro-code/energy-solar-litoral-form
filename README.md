@@ -45,8 +45,8 @@ npx netlify functions:build -s netlify/functions -f .netlify/functions-verify
 
 ## Situação da publicação
 
-- O deploy é feito pela Netlify a partir do repositório GitHub público `VayneismymainPro-code/energy-solar-litoral-form`. O build Linux instala dependências, executa 24 testes e empacota as Functions. Não envie o ZIP montado no Windows como artefato final.
+- O deploy é feito pela Netlify a partir do repositório GitHub público `VayneismymainPro-code/energy-solar-litoral-form`. O build Linux instala dependências, executa 25 testes e empacota as Functions. Não envie o ZIP montado no Windows como artefato final.
 - Um teste de produção com dados e imagens fictícios passou pelo OCR, armazenamento, rejeição de foto inadequada para Energia Solar, envio sem foto, foto de Padrão/Poste sem OCR e bloqueio de leitura sem `admin`. Os pedidos e fotos fictícios criados por esse teste foram excluídos.
 - A função síncrona da Netlify tem limite de payload; o formulário usa 4 MB para imagens por esse motivo.
-- Ainda é necessário verificar o primeiro login de um atendente `admin`, a leitura da foto no painel autenticado, a primeira execução agendada da retenção e o recebimento externo no WhatsApp. O envio automático do WhatsApp não ocorre; a pessoa precisa tocar no link e enviar a mensagem.
+- O primeiro atendente recebe um convite para criar a senha no painel `/admin.html`. Ainda é necessário verificar a aceitação real do convite, o primeiro login `admin`, a leitura da foto no painel autenticado, a primeira execução agendada da retenção e o recebimento externo no WhatsApp. O envio automático do WhatsApp não ocorre; a pessoa precisa tocar no link e enviar a mensagem.
 - Anexos enviados diretamente ao número aberto do WhatsApp ficam fora do controle do formulário.

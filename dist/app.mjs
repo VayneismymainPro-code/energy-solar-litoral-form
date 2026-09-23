@@ -1,5 +1,9 @@
 import { SERVICE_LABELS, formatPhone, validatePhoto, validateStep, summaryRows } from './form-core.mjs';
 
+if (new URLSearchParams(location.hash.slice(1)).has('invite_token')) {
+  location.replace(`/admin.html${location.hash}`);
+}
+
 const elements = Object.fromEntries([...document.querySelectorAll('[id]')].map((element) => [element.id, element]));
 const form = elements['lead-form'];
 const panels = [...form.querySelectorAll('.step-panel')];

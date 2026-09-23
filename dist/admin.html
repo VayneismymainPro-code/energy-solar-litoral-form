@@ -17,6 +17,13 @@
       <label class="field"><span>Senha</span><input name="password" type="password" autocomplete="current-password" required></label>
       <button class="btn primary" type="submit">Entrar</button>
     </form>
+    <form id="invite-form" class="admin-login" hidden>
+      <h2>Ative seu acesso</h2>
+      <p>Crie uma senha para consultar os pedidos recebidos.</p>
+      <label class="field"><span>Nova senha</span><input name="password" type="password" autocomplete="new-password" minlength="10" required></label>
+      <label class="field"><span>Confirme a senha</span><input name="confirm" type="password" autocomplete="new-password" minlength="10" required></label>
+      <button class="btn primary" type="submit">Ativar acesso</button>
+    </form>
     <section id="orders-section" hidden>
       <div class="admin-toolbar"><p>Somente a equipe autorizada pode ver pedidos e fotos.</p><button id="logout-button" class="btn ghost" type="button">Sair</button></div>
       <div id="orders-list" class="admin-list"></div>
