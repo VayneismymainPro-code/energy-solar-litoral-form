@@ -1,9 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { createRequire } from 'node:module';
+import sharp from 'sharp';
 import { validateStep, buildWhatsappUrl, MAX_PHOTO_BYTES } from '../../dist/form-core.mjs';
 import { classifyBillText } from './bill-text.mjs';
-const require = createRequire(import.meta.url);
-const sharp = require('sharp');
 
 const allowedProperty = new Set(['Residencial', 'Comercial', 'Rural', 'Outro']);
 const allowedCase = new Set(['Instalação nova', 'Troca ou adequação', 'Ainda estou avaliando']);

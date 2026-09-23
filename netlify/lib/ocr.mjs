@@ -1,7 +1,5 @@
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-const require = createRequire(import.meta.url);
-const { createWorker } = require('tesseract.js');
+import { createWorker } from 'tesseract.js';
 
 export async function readBillText(image) {
   const worker = await createWorker('por', 1, {
