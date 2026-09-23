@@ -84,16 +84,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   letter-spacing: .15em;
 }
 
-.preview-label {
-  padding: 5px 8px;
-  border: 1px solid #d7d5cb;
-  border-radius: 999px;
-  color: var(--muted);
-  background: rgba(255,255,255,.5);
-  font-size: .67rem;
-  font-weight: 700;
-}
-
 .form-card {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -413,7 +403,6 @@ input[type="file"] {
 @media (max-width: 520px) {
   .page-shell { padding-top: 14px; }
   .topbar { flex-wrap: wrap; margin-bottom: 21px; }
-  .preview-label { font-size: .63rem; }
   .form-head, .form-body, .result-view { padding-left: 18px; padding-right: 18px; }
   .choice-grid { grid-template-columns: 1fr; }
   .result-actions { flex-direction: column; }
