@@ -6,7 +6,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["tesseract.js", "sharp"]
-  included_files = ["netlify/ocr/por.traineddata"]
+  included_files = ["netlify/ocr/*"]
 
 [[headers]]
   for = "/*"

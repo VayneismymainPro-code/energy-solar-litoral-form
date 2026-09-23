@@ -3,6 +3,7 @@ import { createWorker } from 'tesseract.js';
 
 export async function readBillText(image) {
   const worker = await createWorker('por', 1, {
+    workerPath: fileURLToPath(new URL('../ocr/worker.cjs', import.meta.url)),
     langPath: fileURLToPath(new URL('../ocr', import.meta.url)),
     gzip: false,
     cacheMethod: 'none'
