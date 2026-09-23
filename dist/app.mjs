@@ -72,19 +72,19 @@ function renderGallery() {
   elements['gallery-main'].src = main.src;
   elements['gallery-main'].alt = main.alt;
   elements['gallery-counter'].textContent = `Foto ${selected + 1} de ${photos.length}`;
-  elements['gallery-thumbs'].replaceChildren(...photos.flatMap((photo, index) => {
-    if (index === selected) return [];
+  elements['gallery-thumbs'].replaceChildren(...photos.map((photo, index) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'gallery-thumb';
+    button.className = `gallery-thumb${index === selected ? ' is-active' : ''}`;
     button.dataset.galleryIndex = String(index);
-    button.setAttribute('aria-label', `Mostrar foto ${index + 1}: ${photo.alt}`);
+    button.setAttribute('aria-label', `Foto ${index + 1}: ${photo.alt}`);
+    button.setAttribute('aria-pressed', String(index === selected));
     const preview = document.createElement('img');
     preview.src = photo.src;
     preview.alt = '';
     preview.loading = 'lazy';
     button.append(preview);
-    return [button];
+    return button;
   }));
 }
 

@@ -174,10 +174,10 @@ legend, .field > span:first-child {
 .gallery-stage img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
 .gallery-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
 .gallery-counter { color: var(--muted); font-size: .875rem; }
-.gallery-thumbs { display: flex; gap: 8px; }
+.gallery-thumbs { display: grid; grid-template-columns: repeat(3, 82px); gap: 8px; }
 .gallery-thumb {
-  width: 62px;
-  height: 50px;
+  width: 82px;
+  height: 64px;
   padding: 2px;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -185,7 +185,8 @@ legend, .field > span:first-child {
   background: var(--panel);
 }
 .gallery-thumb:hover { border-color: var(--line-strong); }
-.gallery-thumb img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.gallery-thumb.is-active { border-color: var(--line-strong); box-shadow: 0 0 0 2px var(--yellow-soft); }
+.gallery-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .choice-card {
   position: relative;
@@ -410,6 +411,9 @@ input[type="file"] {
   .summary-row { flex-direction: column; gap: 5px; }
   .summary-row strong { max-width: 100%; text-align: left; }
   .gallery-stage { height: 180px; }
+  .gallery-footer { flex-direction: column; align-items: stretch; }
+  .gallery-thumbs { grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .gallery-thumb { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
