@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ef">
+  <meta name="description" content="Solicite seu orçamento de energia solar ou padrão e poste com a Energy Solar Litoral.">
+  <title>Energy Solar | Solicite seu orçamento</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23171819'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffd329' stroke-width='5'/%3E%3Cpath d='M32 14v36M14 32h36M19 19l26 26M45 19 19 45' stroke='%23ffd329' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23ffd329'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <noscript><style>.form-card { display: none !important; }</style></noscript>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#form" aria-label="Energy Solar Litoral, ir para o orçamento">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="./energy-solar-mark.png" width="46" height="46" alt="">
+        </span>
+        <span class="brand-name">ENERGY<small>SOLAR LITORAL</small></span>
+      </a>
+      <span class="preview-label">Prévia demonstrativa</span>
+    </header>
+
+    <noscript>
+      <p class="noscript-message" role="alert">Ative o JavaScript no navegador para preencher o formulário.</p>
+    </noscript>
+
+    <main>
+      <section class="form-card" id="form" aria-labelledby="step-title">
+        <header class="form-head">
+          <div class="head-meta" id="head-meta" hidden>
+            <span class="step-kicker" id="step-kicker"></span>
+            <span class="step-counter" id="step-counter"></span>
+          </div>
+          <div class="progress-track" id="progress-track" hidden role="progressbar" aria-label="Etapas do orçamento" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><div class="progress-value" id="progress-value"></div></div>
+          <h1 id="step-title" tabindex="-1">Solicite seu orçamento</h1>
+          <p id="step-description">Responda algumas informações para nossa equipe analisar seu projeto.</p>
+        </header>
+
+        <form class="form-body" id="lead-form" novalidate>
+          <input class="honeypot" type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <section class="step-panel" data-step="0">
+            <fieldset>
+              <legend>Qual serviço você precisa?</legend>
+              <div class="choice-grid">
+                <button class="choice-card" type="button" data-service="solar" aria-pressed="false">
+                  <span class="choice-copy"><strong>Energia Solar</strong></span>
+                  <span class="choice-mark" aria-hidden="true"></span>
+                </button>
+                <button class="choice-card" type="button" data-service="pattern" aria-pressed="false">
+                  <span class="choice-copy"><strong>Padrão / Poste</strong></span>
+                  <span class="choice-mark" aria-hidden="true"></span>
+                </button>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="step-panel" data-step="1" hidden>
+            <div id="solar-context">
+              <label class="field">
+                <span>Cidade</span>
+                <input type="text" id="city-solar" maxlength="100" required placeholder="Ex.: Matinhos - PR" autocomplete="address-level2">
+              </label>
+              <label class="field">
+                <span>Tipo de imóvel</span>
+                <select id="property-solar" required>
+                  <option value="">Selecione</option>
+                  <option value="Residencial">Residencial</option>
+                  <option value="Comercial">Comercial</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="pattern-context" hidden>
+              <label class="field">
+                <span>Cidade</span>
+                <input type="text" id="city-pattern" maxlength="100" required placeholder="Ex.: Matinhos - PR" autocomplete="address-level2">
+              </label>
+              <label class="field">
+                <span>Tipo de imóvel</span>
+                <select id="property-pattern" required>
+                  <option value="">Selecione</option>
+                  <option value="Residencial">Residencial</option>
+                  <option value="Comercial">Comercial</option>
+                  <option value="Rural">Rural</option>
+                </select>
+              </label>
+              <fieldset>
+                <legend>O que você precisa resolver?</legend>
+                <div class="choice-stack">
+                  <button class="choice-card" type="button" data-case="Instalação nova" aria-pressed="false"><span class="choice-copy"><strong>Instalação nova</strong><small>Preciso instalar um padrão de entrada.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
+                  <button class="choice-card" type="button" data-case="Troca ou adequação" aria-pressed="false"><span class="choice-copy"><strong>Troca ou adequação</strong><small>O padrão existe e precisa ser atualizado.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
+                  <button class="choice-card" type="button" data-case="Ainda estou avaliando" aria-pressed="false"><span class="choice-copy"><strong>Ainda estou avaliando</strong><small>Quero entender o melhor caminho.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
+                </div>
+              </fieldset>
+            </div>
+            <div class="service-gallery" id="service-gallery" aria-label="Fotos do serviço">
+              <div class="gallery-stage">
+                <img id="gallery-main" alt="" width="960" height="540">
+              </div>
+              <div class="gallery-footer">
+                <span class="gallery-counter" id="gallery-counter" aria-live="polite"></span>
+                <div class="gallery-thumbs" id="gallery-thumbs"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="step-panel" data-step="2" hidden>
+            <div id="solar-evidence">
+              <label class="field">
+                <span>Consumo médio</span>
+                <div class="unit-input">
+                  <input type="number" id="consumption" min="0.01" max="999999" step="any" placeholder="Ex.: 450" inputmode="decimal" aria-describedby="consumption-help">
+                  <span class="unit-suffix">kWh / mês</span>
+                </div>
+                <small class="helper" id="consumption-help">Se não souber, envie uma foto da conta pelo formulário.</small>
+              </label>
+              <div class="or-divider">ou</div>
+              <label class="file-drop" for="bill-photo">
+                <strong>Selecione uma foto da sua conta de luz</strong>
+                <small id="bill-photo-help">JPG, PNG ou WebP, até 4 MB. A foto será conferida e enviada pelo formulário.</small>
+                <span class="upload-button">Selecionar conta</span>
+                <span class="file-name" id="bill-file-name">Nenhuma imagem selecionada</span>
+                <input type="file" id="bill-photo" accept="image/jpeg,image/png,image/webp" aria-label="Foto da conta de luz" aria-describedby="bill-photo-help bill-file-name">
+              </label>
+            </div>
+
+            <div id="pattern-evidence" hidden>
+              <fieldset>
+                <legend>Você já tem algum projeto ou orientação?</legend>
+                <div class="choice-grid">
+                  <button class="choice-card" type="button" data-project="Sim, já tenho" aria-pressed="false"><span class="choice-copy"><strong>Sim, já tenho</strong><small>Posso explicar ou mostrar o que recebi.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
+                  <button class="choice-card" type="button" data-project="Ainda não" aria-pressed="false"><span class="choice-copy"><strong>Ainda não</strong><small>Preciso de ajuda para definir o próximo passo.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
+                </div>
+              </fieldset>
+              <label class="file-drop" for="pattern-photo">
+                <strong>Selecione uma foto do padrão ou do local</strong>
+                <small id="pattern-photo-help">Opcional. JPG, PNG ou WebP, até 4 MB. A foto será enviada pelo formulário.</small>
+                <span class="upload-button">Selecionar foto</span>
+                <span class="file-name" id="pattern-file-name">Nenhuma imagem selecionada</span>
+                <input type="file" id="pattern-photo" accept="image/jpeg,image/png,image/webp" aria-label="Foto do padrão ou do local" aria-describedby="pattern-photo-help pattern-file-name">
+              </label>
+            </div>
+          </section>
+
+          <section class="step-panel" data-step="3" hidden>
+            <div class="field-grid two">
+              <label class="field">
+                <span>Seu nome</span>
+                <input type="text" id="name" required maxlength="100" placeholder="Como podemos chamar você?" autocomplete="name">
+              </label>
+              <label class="field">
+                <span>WhatsApp</span>
+                <input type="tel" id="phone" required placeholder="(41) 99999-9999" autocomplete="tel" inputmode="tel" maxlength="25" aria-describedby="phone-help">
+                <small class="helper" id="phone-help">Inclua o DDD. Ex.: (41) 99999-9999.</small>
+              </label>
+            </div>
+            <label class="field">
+              <span>Melhor horário para falar <span class="optional">(opcional)</span></span>
+              <select id="best-time">
+                <option value="">Escolha uma opção</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="No horário comercial">No horário comercial</option>
+                <option value="Prefiro combinar">Prefiro combinar</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Algum detalhe importante <span class="optional">(opcional)</span></span>
+              <textarea id="notes" maxlength="1000" placeholder="Ex.: obra em andamento, urgência ou dúvida específica."></textarea>
+            </label>
+          </section>
+
+          <p class="error-message" id="error-message" role="alert" aria-live="polite" tabindex="-1"></p>
+          <div class="action-row" id="action-row" hidden>
+            <button class="btn ghost" type="button" id="back-button" hidden>
+              <svg viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Voltar
+            </button>
+            <button class="btn primary" type="submit" id="next-button">
+              <span id="next-label">Próximo</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path id="next-icon" d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="result-view" id="result-view" hidden aria-live="polite">
+          <div class="summary" id="summary"></div>
+          <div class="result-actions">
+            <a class="btn primary" id="send-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.3 11.8a8.3 8.3 0 0 1-12.2 7.3L4 20l.9-4a8.3 8.3 0 1 1 15.4-4.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.7 8.2c.2-.4.4-.4.7-.4h.4c.2 0 .3.1.4.4l.6 1.4c.1.2.1.4-.1.6l-.5.6c-.2.2-.2.4 0 .6.5.8 1.1 1.4 1.9 1.8.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.4.7c.2.1.3.3.3.5 0 .3-.2 1-.6 1.3-.4.4-1.1.6-1.7.5-.6-.1-1.4-.3-2.6-1.1-1.5-1-2.5-2.5-2.8-3.2-.3-.7-.3-1.4-.1-1.8.2-.4.5-.8.8-.9Z" fill="currentColor"/></svg>
+              Abrir WhatsApp
+            </a>
+            <button class="btn ghost" type="button" id="edit-button">Editar dados</button>
+          </div>
+          <button class="btn ghost restart-button" type="button" id="restart-button">Novo pedido</button>
+          <div class="result-meta"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 10v5M12 7.5v.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="result-meta-text">Após registrar o pedido, abra o WhatsApp e envie a mensagem.</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

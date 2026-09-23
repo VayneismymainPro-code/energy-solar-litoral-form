@@ -1,0 +1,17 @@
+{
+  "name": "energy-solar-form",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/form-core.test.mjs tests/order.test.mjs tests/admin-data.test.mjs tests/admin-routes.test.mjs tests/retention.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "test:netlify": "node tests/netlify-local.mjs",
+    "test:netlify:browser": "node tests/netlify-browser.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.0",
+    "@netlify/identity": "^2.0.0",
+    "sharp": "^0.35.4",
+    "tesseract.js": "^7.0.0"
+  }
+}

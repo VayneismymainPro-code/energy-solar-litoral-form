@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Energy Solar | Atendimento</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-head"><span class="brand-name">ENERGY<small>SOLAR LITORAL</small></span><h1>Pedidos recebidos</h1></header>
+    <form id="login-form" class="admin-login">
+      <h2>Acesso do atendimento</h2>
+      <label class="field"><span>E-mail</span><input name="email" type="email" autocomplete="username" required></label>
+      <label class="field"><span>Senha</span><input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">Entrar</button>
+    </form>
+    <section id="orders-section" hidden>
+      <div class="admin-toolbar"><p>Somente a equipe autorizada pode ver pedidos e fotos.</p><button id="logout-button" class="btn ghost" type="button">Sair</button></div>
+      <div id="orders-list" class="admin-list"></div>
+    </section>
+    <p id="admin-status" role="status" aria-live="polite"></p>
+  </main>
+  <script type="module" src="./admin.mjs"></script>
+</body>
+</html>
