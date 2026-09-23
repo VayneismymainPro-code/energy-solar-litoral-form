@@ -31,7 +31,7 @@ npx netlify dev --offline --port 8888 --dir dist
 
 Abra `http://127.0.0.1:8888/`. Servir somente `dist/` com `python -m http.server` mostra a interface, mas **não** registra pedidos nem executa OCR. Netlify Dev usa um armazenamento local isolado; não acessa as fotos de produção.
 
-Para o painel em produção, crie/vincule um site Netlify, habilite Netlify Identity com inscrição por convite e atribua o papel `admin` apenas aos atendentes autorizados. O login do painel usa `/api/login`; as rotas privadas verificam o papel também no servidor. Não compartilhe credenciais em arquivos do repositório.
+O site está publicado em https://energy-solar-litoral-form.netlify.app/. O Netlify Identity está habilitado com inscrição apenas por convite; atribua o papel `admin` somente aos atendentes autorizados. O login do painel usa `/api/login`; as rotas privadas verificam o papel também no servidor. Não compartilhe credenciais em arquivos do repositório.
 
 ## Verificação
 
@@ -43,10 +43,10 @@ npx netlify functions:build -s netlify/functions -f .netlify/functions-verify
 
 `tests/netlify-browser.mjs` também verifica a interface no runtime Netlify e usa o Playwright disponibilizado pelo ambiente de QA. `tests/browser.mjs` e `tests/gallery.mjs` mantêm os percursos de interface com resposta de API simulada. Fotos e dados dos testes são fictícios. Nenhum teste abre ou envia uma mensagem de WhatsApp.
 
-## Limites de entrega
+## Situação da publicação
 
-- A publicação exige uma conta Netlify conectada e um projeto criado ou vinculado. O CLI local sem autenticação não consegue concluir `netlify build`/deploy.
-- O pacote de Functions montado **neste Windows** contém o binário Windows do `sharp`. A publicação deve instalar dependências e montar as Functions em um build **Linux da Netlify**, por exemplo pelo repositório Git conectado, antes de ser considerada verificada em produção. Não enviar o ZIP local como artefato final.
+- O deploy é feito pela Netlify a partir do repositório GitHub público `VayneismymainPro-code/energy-solar-litoral-form`. O build Linux instala dependências, executa 24 testes e empacota as Functions. Não envie o ZIP montado no Windows como artefato final.
+- Um teste de produção com dados e imagens fictícios passou pelo OCR, armazenamento, rejeição de foto inadequada para Energia Solar, envio sem foto, foto de Padrão/Poste sem OCR e bloqueio de leitura sem `admin`. Os pedidos e fotos fictícios criados por esse teste foram excluídos.
 - A função síncrona da Netlify tem limite de payload; o formulário usa 4 MB para imagens por esse motivo.
-- Ainda é necessário verificar em um deploy privado: convite/login de um atendente `admin`, leitura da foto armazenada, execução agendada da retenção e recebimento externo no WhatsApp. HTTP 201 local e build das Functions não provam esses pontos.
+- Ainda é necessário verificar o primeiro login de um atendente `admin`, a leitura da foto no painel autenticado, a primeira execução agendada da retenção e o recebimento externo no WhatsApp. O envio automático do WhatsApp não ocorre; a pessoa precisa tocar no link e enviar a mensagem.
 - Anexos enviados diretamente ao número aberto do WhatsApp ficam fora do controle do formulário.
