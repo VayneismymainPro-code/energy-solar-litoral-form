@@ -51,6 +51,7 @@ async function loadOrders() {
     else {
       addText(card, 'p', 'Necessidade', order.data.serviceCase);
       addText(card, 'p', 'Projeto ou orientação', order.data.project);
+      if (order.data.voltage) addText(card, 'p', 'Tensão de rede', order.data.voltage);
     }
     addText(card, 'p', 'Contato', `${order.data.phone} · ${order.data.bestTime || 'A combinar'}`);
     if (order.data.notes) addText(card, 'p', 'Observação', order.data.notes);

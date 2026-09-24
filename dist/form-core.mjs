@@ -10,6 +10,7 @@ export const FORM_ERRORS = Object.freeze({
   invalidConsumption: 'Informe um consumo entre 0,01 e 999.999 kWh por mês.',
   consumptionOrPhotoRequired: 'Informe o consumo ou selecione uma foto da conta.',
   projectRequired: 'Escolha se você já tem algum projeto ou orientação.',
+  voltageRequired: 'Informe a tensão de rede ou escolha “Não sei”.',
   nameRequired: 'Informe seu nome para continuar.',
   phoneRequired: 'Informe um telefone com DDD e 10 ou 11 dígitos.'
 });
@@ -34,7 +35,7 @@ export function formatPhone(value) {
 }
 
 export function fieldsForActiveService(data) {
-  if (data.service === 'solar') return { ...data, serviceCase: '', project: '' };
+  if (data.service === 'solar') return { ...data, serviceCase: '', project: '', voltage: '' };
   if (data.service === 'pattern') return { ...data, consumption: '' };
   return data;
 }
@@ -61,7 +62,10 @@ export function validateStep(data, step) {
     }
     if (!data.consumption && !data.photo) return error('consumption', FORM_ERRORS.consumptionOrPhotoRequired);
   }
-  if (step === 2 && data.service === 'pattern' && !data.project) return error('project', FORM_ERRORS.projectRequired);
+  if (step === 2 && data.service === 'pattern') {
+    if (!data.project) return error('project', FORM_ERRORS.projectRequired);
+    if (!data.voltage) return error('voltage', FORM_ERRORS.voltageRequired);
+  }
   if (step === 3) {
     if (!data.name) return error('name', FORM_ERRORS.nameRequired);
     if (!isValidPhone(data.phone)) return error('phone', FORM_ERRORS.phoneRequired);
@@ -82,7 +86,7 @@ export function summaryRows(data, { photoStored = false } = {}) {
       : (photoStored ? 'Conferir a conta de luz recebida pelo formulário' : 'Conferir a foto da conta que vou anexar no WhatsApp')]);
     if (data.photo && data.consumption) rows.push(['Conta de luz', photo]);
   } else {
-    rows.push(['Necessidade', data.serviceCase], ['Projeto ou orientação', data.project]);
+    rows.push(['Necessidade', data.serviceCase], ['Projeto ou orientação', data.project], ['Tensão de rede', data.voltage]);
     if (data.photo) rows.push(['Foto do local', photo]);
   }
   rows.push(['Contato', `${data.name} · ${formatPhone(data.phone)}`]);
@@ -106,6 +110,7 @@ export function buildWhatsappUrl(data, { photoStored = false } = {}) {
   } else {
     message.push(`• Necessidade: ${data.serviceCase}`);
     message.push(`• Projeto ou orientação: ${data.project}`);
+    message.push(`• Tensão de rede: ${data.voltage}`);
   }
   if (data.photo && (data.service !== 'solar' || data.consumption)) {
     message.push(`• ${data.service === 'solar' ? 'Foto da conta' : 'Foto do local'}: ${photoStored ? 'enviada pelo formulário' : 'vou anexar nesta conversa'}`);

@@ -35,7 +35,7 @@ assert.equal(noPhoto.status, 201);
 assert.equal(noPhoto.body.photoStored, false);
 console.log('PASS: solar consumption without photo');
 
-const pattern = await post({ ...fields, service: 'pattern', serviceCase: 'Instalação nova', project: 'Ainda não' }, unrelatedPhoto);
+const pattern = await post({ ...fields, service: 'pattern', serviceCase: 'Instalação nova', project: 'Ainda não', voltage: 'Não sei' }, unrelatedPhoto);
 assert.equal(pattern.status, 201);
 assert.equal(pattern.body.photoStored, true);
 console.log('PASS: pattern photo accepted without OCR by agreed rule');

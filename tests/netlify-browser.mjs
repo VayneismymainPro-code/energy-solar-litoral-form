@@ -39,6 +39,7 @@ try {
   await page.locator('[data-case="Instalação nova"]').click();
   await page.locator('#next-button').click();
   await page.locator('[data-project="Ainda não"]').click();
+  await page.locator('#voltage').selectOption('Não sei');
   await page.locator('#next-button').click();
   await page.locator('#name').fill('Pessoa Teste');
   await page.locator('#phone').fill('(41) 3333-4444');
@@ -55,6 +56,7 @@ try {
   await page.locator('[data-case="Troca ou adequação"]').click();
   await page.locator('#next-button').click();
   await page.locator('[data-project="Sim, já tenho"]').click();
+  await page.locator('#voltage').selectOption('Trifásico 127/220/380 V');
   await page.locator('#pattern-photo').setInputFiles(fileURLToPath(new URL('./fixtures/conta-ficticia.png', import.meta.url)));
   await page.locator('#next-button').click();
   await page.locator('#name').fill('Pessoa Teste');

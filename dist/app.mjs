@@ -117,7 +117,7 @@ function renderStep({ focus = true } = {}) {
   const descriptions = [
     'Escolha um serviço e responda às perguntas para organizar seu pedido.',
     solar ? 'Informe a cidade e o tipo de imóvel.' : 'Informe a cidade, o tipo de imóvel e o que você precisa resolver.',
-    solar ? 'Informe o consumo médio mensal em kWh ou selecione uma foto da conta de luz.' : 'Escolha uma opção e, se quiser, inclua uma foto do padrão ou do local.',
+    solar ? 'Informe o consumo médio mensal em kWh ou selecione uma foto da conta de luz.' : 'Informe o que souber sobre o projeto e a tensão de rede. Se quiser, inclua uma foto.',
     'Informe seu nome e WhatsApp. O melhor horário é opcional.'
   ];
   elements['step-title'].textContent = titles[step];
@@ -150,6 +150,7 @@ function readData() {
     property: value(`property-${state.service}`),
     serviceCase: state.serviceCase,
     project: state.project,
+    voltage: value('voltage'),
     consumption: value('consumption'),
     photo: photoInput.files[0]?.name || '',
     name: value('name'), phone: value('phone'), bestTime: value('best-time'), notes: value('notes')

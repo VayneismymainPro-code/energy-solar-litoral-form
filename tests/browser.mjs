@@ -127,6 +127,7 @@ try {
   await next();
   assert.match(await field('error-message').textContent(), /projeto/);
   await page.locator('[data-project="Ainda não"]').click();
+  await field('voltage').selectOption('Não sei');
   await next();
   await field('phone').fill('(41) 3333-4444');
   await field('notes').fill('');

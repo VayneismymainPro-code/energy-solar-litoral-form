@@ -150,6 +150,16 @@
                   <button class="choice-card" type="button" data-project="Ainda não" aria-pressed="false"><span class="choice-copy"><strong>Ainda não</strong><small>Preciso de ajuda para definir o próximo passo.</small></span><span class="choice-mark" aria-hidden="true"></span></button>
                 </div>
               </fieldset>
+              <label class="field voltage-field">
+                <span>Qual é a tensão de rede do local?</span>
+                <select id="voltage" required>
+                  <option value="">Selecione ou escolha “Não sei”</option>
+                  <option value="Monofásico 127 V">Monofásico · 127 V</option>
+                  <option value="Bifásico 127/220 V">Bifásico · 127/220 V</option>
+                  <option value="Trifásico 127/220/380 V">Trifásico · 127/220/380 V</option>
+                  <option value="Não sei">Não sei</option>
+                </select>
+              </label>
               <label class="file-drop" for="pattern-photo">
                 <strong>Selecione uma foto do padrão ou do local</strong>
                 <small id="pattern-photo-help">Opcional. JPG, PNG ou WebP, até 4 MB. A foto será enviada pelo formulário.</small>

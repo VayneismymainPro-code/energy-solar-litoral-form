@@ -182,6 +182,7 @@ try {
   await page.locator('[data-case="Instalação nova"]').click();
   await page.locator('#next-button').click();
   await page.locator('[data-project="Ainda não"]').click();
+  await page.locator('#voltage').selectOption('Não sei');
   await page.locator('#next-button').click();
   await page.locator('#name').fill('Pessoa Teste');
   await page.locator('#phone').fill('(41) 99999-9999');

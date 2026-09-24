@@ -283,6 +283,7 @@ legend, .field > span:first-child {
 
 .field { display: block; }
 .field + .field, .field + fieldset, fieldset + .field, fieldset + fieldset { margin-top: 20px; }
+.voltage-field { margin-top: 20px; }
 
 input[type="text"], input[type="tel"], input[type="number"], select, textarea {
   width: 100%;

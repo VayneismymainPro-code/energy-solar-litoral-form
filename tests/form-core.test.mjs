@@ -7,7 +7,7 @@ const solar = { service: 'solar', city: 'Matinhos', property: 'Residencial', con
 
 test('accepts complete requests for both services', () => {
   for (const step of [1, 2, 3]) assert.equal(validateStep(solar, step), null);
-  const pattern = { ...solar, service: 'pattern', consumption: '', serviceCase: 'Instalação nova', project: 'Ainda não' };
+  const pattern = { ...solar, service: 'pattern', consumption: '', serviceCase: 'Instalação nova', project: 'Ainda não', voltage: 'Não sei' };
   for (const step of [1, 2, 3]) assert.equal(validateStep(pattern, step), null);
 });
 
@@ -32,6 +32,7 @@ test('validates the required fields for the active service', () => {
   assert.equal(validateStep({ ...solar, property: '' }, 1)?.field, 'property-solar');
   assert.equal(validateStep({ ...solar, service: 'pattern' }, 1)?.field, 'case');
   assert.equal(validateStep({ ...solar, service: 'pattern' }, 2)?.field, 'project');
+  assert.equal(validateStep({ ...solar, service: 'pattern', project: 'Ainda não', voltage: '' }, 2)?.field, 'voltage');
   assert.equal(validateStep({ ...solar, name: '' }, 3)?.field, 'name');
 });
 
@@ -58,7 +59,7 @@ test('summary and WhatsApp share the same data and do not claim a photo was sent
   assert.match(message, /\n\*Observação\*\n<script>texto<\/script>\nDúvida & instalação\?/);
   assert.doesNotMatch(message, /conta & luz.jpg|Não selecionada/);
   assert.doesNotMatch(message, /Foto da conta anexada/);
-  const patternRows = summaryRows({ ...solar, service: 'pattern', serviceCase: 'Troca', project: 'Ainda não' });
+  const patternRows = summaryRows({ ...solar, service: 'pattern', serviceCase: 'Troca', project: 'Ainda não', voltage: 'Não sei' });
   assert.ok(patternRows.some(([key]) => key === 'Necessidade'));
   assert.ok(!patternRows.some(([key]) => key === 'Consumo médio'));
 });
@@ -69,11 +70,12 @@ test('WhatsApp request omits absent photo and includes only the selected service
   assert.match(standard, /• Melhor horário: No horário comercial$/);
   assert.doesNotMatch(standard, /Conta de luz|Foto|Não selecionada|Necessidade/);
 
-  const pattern = new URL(buildWhatsappUrl({ ...solar, service: 'pattern', serviceCase: 'Troca ou adequação', project: 'Ainda não', consumption: '', photo: 'local.jpg' })).searchParams.get('text');
+  const pattern = new URL(buildWhatsappUrl({ ...solar, service: 'pattern', serviceCase: 'Troca ou adequação', project: 'Ainda não', voltage: 'Bifásico 127/220 V', consumption: '', photo: 'local.jpg' })).searchParams.get('text');
   assert.match(pattern, /\*Serviço e local\*\n• Padrão \/ Poste\n/);
   assert.match(pattern, /\n\*Detalhes\*\n/);
   assert.match(pattern, /• Necessidade: Troca ou adequação\n/);
   assert.match(pattern, /• Projeto ou orientação: Ainda não\n/);
+  assert.match(pattern, /• Tensão de rede: Bifásico 127\/220 V\n/);
   assert.match(pattern, /• Foto do local: vou anexar nesta conversa\n/);
   assert.doesNotMatch(pattern, /Consumo|Conta de luz|local.jpg/);
 });
@@ -82,6 +84,7 @@ test('submission data excludes answers that belong to the other service', () => 
   const solarData = fieldsForActiveService({ ...solar, serviceCase: 'Troca ou adequação', project: 'Ainda não' });
   assert.equal(solarData.serviceCase, '');
   assert.equal(solarData.project, '');
+  assert.equal(solarData.voltage, '');
   const patternData = fieldsForActiveService({ ...solar, service: 'pattern', consumption: '450.5' });
   assert.equal(patternData.consumption, '');
 });

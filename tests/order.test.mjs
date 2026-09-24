@@ -42,6 +42,18 @@ test('solar stores a decoded bill only after OCR and returns a matching referenc
   assert.doesNotMatch(new URL(result.whatsappUrl).searchParams.get('text'), new RegExp(result.id));
 });
 
+test('pattern stores the selected voltage and rejects unsupported values', async () => {
+  const data = { ...base, service: 'pattern', serviceCase: 'Instalação nova', project: 'Ainda não', voltage: 'Não sei' };
+  const store = fakeStores();
+  const result = await submitOrder(request(data), { ...store, recognize: async () => { throw new Error('OCR should not run'); } });
+  assert.equal([...store.orderEntries.values()][0].data.voltage, 'Não sei');
+  assert.match(new URL(result.whatsappUrl).searchParams.get('text'), /Tensão de rede: Não sei/);
+  await assert.rejects(
+    submitOrder(request({ ...data, voltage: '440 V' }), { ...fakeStores(), recognize: async () => '' }),
+    SubmissionError
+  );
+});
+
 test('solar photo with no bill text or broken OCR never reaches storage', async () => {
   for (const recognize of [async () => 'joias', async () => { throw new Error('OCR failed'); }]) {
     const store = fakeStores();
@@ -60,7 +72,7 @@ test('the settled OCR rule accepts a bill even when jewelry appears beside it', 
 
 test('pattern accepts a valid photo without calling OCR', async () => {
   const store = fakeStores();
-  const data = { ...base, service: 'pattern', serviceCase: 'Instalação nova', project: 'Ainda não' };
+  const data = { ...base, service: 'pattern', serviceCase: 'Instalação nova', project: 'Ainda não', voltage: 'Não sei' };
   const result = await submitOrder(request(data, await fixture()), { ...store, recognize: async () => { throw new Error('OCR should not run'); } });
   assert.equal(result.photoStored, true);
   assert.match(new URL(result.whatsappUrl).searchParams.get('text'), /Foto do local: enviada pelo formulário/);

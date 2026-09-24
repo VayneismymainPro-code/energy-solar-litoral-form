@@ -6,6 +6,7 @@ import { classifyBillText } from './bill-text.mjs';
 const allowedProperty = new Set(['Residencial', 'Comercial', 'Rural', 'Outro']);
 const allowedCase = new Set(['Instalação nova', 'Troca ou adequação', 'Ainda estou avaliando']);
 const allowedProject = new Set(['Sim, já tenho', 'Ainda não']);
+const allowedVoltage = new Set(['Monofásico 127 V', 'Bifásico 127/220 V', 'Trifásico 127/220/380 V', 'Não sei']);
 const allowedTime = new Set(['', 'Manhã', 'Tarde', 'No horário comercial', 'Prefiro combinar']);
 
 export class SubmissionError extends Error {
@@ -20,13 +21,14 @@ function cleanData(value) {
   };
   const data = {
     service: field('service', 12), city: field('city', 100), property: field('property', 30),
-    serviceCase: field('serviceCase', 60), project: field('project', 60),
+    serviceCase: field('serviceCase', 60), project: field('project', 60), voltage: typeof value.voltage === 'string' ? field('voltage', 32) : '',
     consumption: field('consumption', 30), name: field('name', 100),
     phone: field('phone', 25), bestTime: field('bestTime', 35), notes: field('notes', 1000), photo: ''
   };
   if (!['solar', 'pattern'].includes(data.service) || !allowedProperty.has(data.property) ||
-      (data.service === 'pattern' && (!allowedCase.has(data.serviceCase) || !allowedProject.has(data.project))) ||
+      (data.service === 'pattern' && (!allowedCase.has(data.serviceCase) || !allowedProject.has(data.project) || !allowedVoltage.has(data.voltage))) ||
       !allowedTime.has(data.bestTime)) throw new SubmissionError('Confira as opções selecionadas.');
+  if (data.service === 'solar') data.voltage = '';
   return data;
 }
 
