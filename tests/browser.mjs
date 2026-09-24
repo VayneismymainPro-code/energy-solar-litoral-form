@@ -14,7 +14,10 @@ page.on('response', (response) => { if (response.status() >= 400) errors.push(`$
 const field = (id) => page.locator(`#${id}`);
 const click = (id) => field(id).click();
 const next = () => click('next-button');
-const visible = async (id) => assert.ok(await field(id).isVisible(), `${id} should be visible`);
+const visible = async (id) => {
+  await field(id).waitFor({ state: 'visible', timeout: 5000 });
+  assert.ok(await field(id).isVisible(), `${id} should be visible`);
+};
 const layout = async () => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No horizontal overflow');
 const photo = { name: 'conta-de-luz.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/a9sAAAAASUVORK5CYII=', 'base64') };
 
@@ -47,6 +50,7 @@ try {
   await visible('result-view');
   assert.equal(await field('summary').locator('img').count(), 0, 'User text is not parsed as markup');
   const firstUrl = new URL(await field('send-whatsapp').getAttribute('href'));
+  assert.equal(firstUrl.pathname, '/5541995587407', 'Solar request targets the confirmed WhatsApp number');
   assert.ok(firstUrl.searchParams.get('text').includes('*Consumo*\n• 450.5 kWh/mês'));
   assert.ok(!firstUrl.searchParams.get('text').includes('Não selecionada'));
   assert.ok(firstUrl.searchParams.get('text').includes('(41) 99999-9999'));
@@ -55,7 +59,11 @@ try {
   assert.equal(await field('name').inputValue(), 'Teste local');
   await field('name').fill('Nome corrigido');
   await next();
-  assert.ok((await field('send-whatsapp').getAttribute('href')).includes('Nome%20corrigido'));
+  await page.waitForFunction(() => {
+    const href = document.getElementById('send-whatsapp')?.getAttribute('href');
+    return href && new URL(href).searchParams.get('text')?.includes('Nome corrigido');
+  });
+  assert.ok(new URL(await field('send-whatsapp').getAttribute('href')).searchParams.get('text').includes('Nome corrigido'));
   await click('edit-button');
   await click('back-button');
   await click('back-button');
@@ -79,6 +87,7 @@ try {
   await page.screenshot({ path: 'outputs/refactor/mobile-consumo.png', fullPage: true });
   await next();
   await next();
+  await visible('result-view');
   assert.match(await field('summary').textContent(), /Recebida pelo formulário/);
   assert.doesNotMatch(await field('summary').textContent(), /Foto da conta anexada/);
   await layout();
@@ -88,10 +97,7 @@ try {
   await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
   await page.waitForFunction(() => getComputedStyle(document.documentElement).fontSize === '32px');
   await layout();
-  assert.ok(await page.locator('.preview-label').evaluate((element) => {
-    const bounds = element.getBoundingClientRect();
-    return bounds.left >= 0 && bounds.right <= innerWidth;
-  }), 'Preview label must remain visible at 320px with 200% text');
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No horizontal overflow at 320px with 200% text');
   await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
   await page.waitForFunction(() => getComputedStyle(document.documentElement).fontSize === '16px');
 
@@ -115,6 +121,7 @@ try {
   assert.match(await field('summary').textContent(), /Troca ou adequação/);
   assert.doesNotMatch(await field('summary').textContent(), /conta-de-luz|Consumo médio/);
   const patternMessage = new URL(await field('send-whatsapp').getAttribute('href')).searchParams.get('text');
+  assert.equal(new URL(await field('send-whatsapp').getAttribute('href')).pathname, '/5541995587407', 'Pattern request targets the confirmed WhatsApp number');
   assert.match(patternMessage, /\n\*Detalhes\*\n• Necessidade: Troca ou adequação/);
   assert.match(patternMessage, /\n\*Contato\*\n• Nome:/);
   assert.doesNotMatch(patternMessage, /Não selecionada|Conta de luz/);

@@ -33,8 +33,8 @@
             <span class="step-counter" id="step-counter"></span>
           </div>
           <div class="progress-track" id="progress-track" hidden role="progressbar" aria-label="Etapas do orçamento" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><div class="progress-value" id="progress-value"></div></div>
-          <h1 id="step-title" tabindex="-1">Solicite seu orçamento</h1>
-          <p id="step-description">Responda algumas informações para nossa equipe analisar seu projeto.</p>
+          <h1 id="step-title" tabindex="-1">Seu projeto começa aqui.</h1>
+          <p id="step-description">Solicite seu orçamento de energia solar ou de padrão de entrada.</p>
         </header>
 
         <form class="form-body" id="lead-form" novalidate>
@@ -42,21 +42,23 @@
           <section class="step-panel" data-step="0">
             <fieldset>
               <legend>Qual serviço você precisa?</legend>
-              <div class="choice-grid">
-                <button class="choice-card" type="button" data-service="solar" aria-pressed="false">
-                  <span class="choice-copy"><strong>Energia Solar</strong></span>
+              <div class="choice-grid service-choice-grid">
+                <button class="choice-card service-choice-card" type="button" data-service="solar" aria-pressed="false">
+                  <span class="service-choice-photo" aria-hidden="true"><img src="./assets/solar-01.jpg" alt="" width="120" height="90"></span>
+                  <span class="choice-copy"><strong>Energia Solar</strong><small>Peça um orçamento para seu projeto de energia solar.</small></span>
                   <span class="choice-mark" aria-hidden="true"></span>
                 </button>
-                <button class="choice-card" type="button" data-service="pattern" aria-pressed="false">
-                  <span class="choice-copy"><strong>Padrão / Poste</strong></span>
+                <button class="choice-card service-choice-card" type="button" data-service="pattern" aria-pressed="false">
+                  <span class="service-choice-photo" aria-hidden="true"><img src="./assets/pattern-01.jpg" alt="" width="120" height="90"></span>
+                  <span class="choice-copy"><strong>Padrão / Poste</strong><small>Orçamento para instalar ou adequar o padrão de entrada.</small></span>
                   <span class="choice-mark" aria-hidden="true"></span>
                 </button>
               </div>
             </fieldset>
           </section>
 
-          <section class="step-panel" data-step="1" hidden>
-            <div id="solar-context">
+          <section class="step-panel service-step-layout" data-step="1" hidden>
+            <div class="service-step-fields" id="solar-context">
               <label class="field">
                 <span>Cidade</span>
                 <input type="text" id="city-solar" maxlength="100" required placeholder="Ex.: Matinhos - PR" autocomplete="address-level2">
@@ -73,7 +75,7 @@
               </label>
             </div>
 
-            <div id="pattern-context" hidden>
+            <div class="service-step-fields" id="pattern-context" hidden>
               <label class="field">
                 <span>Cidade</span>
                 <input type="text" id="city-pattern" maxlength="100" required placeholder="Ex.: Matinhos - PR" autocomplete="address-level2">
@@ -97,15 +99,27 @@
               </fieldset>
             </div>
             <div class="service-gallery" id="service-gallery" aria-label="Fotos do serviço">
-              <div class="gallery-stage">
+              <button class="gallery-stage" id="gallery-open" type="button" aria-haspopup="dialog" aria-controls="gallery-dialog" aria-label="Ampliar foto selecionada">
                 <img id="gallery-main" alt="" width="960" height="540">
-              </div>
+                <span class="gallery-stage-hint" aria-hidden="true">Ampliar</span>
+              </button>
               <div class="gallery-footer">
                 <span class="gallery-counter" id="gallery-counter" aria-live="polite"></span>
                 <div class="gallery-thumbs" id="gallery-thumbs"></div>
               </div>
             </div>
           </section>
+
+          <dialog class="gallery-dialog" id="gallery-dialog" aria-labelledby="gallery-dialog-title" aria-describedby="gallery-dialog-help">
+            <div class="gallery-dialog-header">
+              <div>
+                <h2 id="gallery-dialog-title">Foto ampliada</h2>
+                <p id="gallery-dialog-help">Use Esc ou o botão Fechar para voltar ao formulário.</p>
+              </div>
+              <button class="gallery-dialog-close" id="gallery-dialog-close" type="button">Fechar</button>
+            </div>
+            <img id="gallery-dialog-image" alt="">
+          </dialog>
 
           <section class="step-panel" data-step="2" hidden>
             <div id="solar-evidence">

@@ -1,6 +1,6 @@
 // Business rules shared by the screen, WhatsApp message and regression tests.
 export const SERVICE_LABELS = Object.freeze({ solar: 'Energia Solar', pattern: 'Padrão / Poste' });
-export const WHATSAPP_NUMBER = '554199587407';
+export const WHATSAPP_NUMBER = '5541995587407';
 export const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 
 export function phoneDigits(value) {

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "conta-ficticia",
+    "confidence": 93,
+    "characters": 350,
+    "matchedTerms": [
+      "conta",
+      "energia",
+      "consumo",
+      "kwh",
+      "fatura"
+    ]
+  },
+  {
+    "id": "joias-sobre-conta",
+    "confidence": 38,
+    "characters": 513,
+    "matchedTerms": []
+  },
+  {
+    "id": "joias-ao-lado-conta",
+    "confidence": 56,
+    "characters": 777,
+    "matchedTerms": [
+      "conta",
+      "energia",
+      "consumo",
+      "kwh"
+    ]
+  },
+  {
+    "id": "joias-sem-conta",
+    "confidence": 39,
+    "characters": 34,
+    "matchedTerms": []
+  },
+  {
+    "id": "padrao-foto-08",
+    "confidence": 40,
+    "characters": 334,
+    "matchedTerms": []
+  }
+]
