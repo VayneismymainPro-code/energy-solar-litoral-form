@@ -109,6 +109,7 @@ function renderStep({ focus = true } = {}) {
   const label = SERVICE_LABELS[service];
   form.hidden = false;
   elements['result-view'].hidden = true;
+  elements['customer-reviews'].hidden = true;
   for (const id of ['head-meta', 'progress-track', 'action-row', 'back-button']) elements[id].hidden = start;
   elements['step-kicker'].textContent = label || '';
   elements['step-counter'].textContent = start ? '' : `${step} de 3`;
@@ -179,6 +180,7 @@ function showResult(data, submitted) {
   elements['step-description'].textContent = 'Confira os dados e continue pelo WhatsApp.';
   form.hidden = true;
   elements['result-view'].hidden = false;
+  elements['customer-reviews'].hidden = false;
   focusHeading();
 }
 
