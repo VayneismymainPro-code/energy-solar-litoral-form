@@ -646,3 +646,13 @@ input[type="file"] {
 
   .service-choice-photo { width: 76px; }
 }
+
+/* Discreet, readable privacy access without interrupting the form. */
+.privacy-footer { margin-top: 24px; text-align: center; font-size: .8125rem; }
+.privacy-footer a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px; color: var(--muted); text-underline-offset: 3px; }
+.privacy-new-tab { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.privacy-page { max-width: 760px; margin: auto; padding: 32px 20px 48px; }
+.privacy-page h1 { font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.15; }
+.privacy-page h2 { margin-top: 28px; font-size: 1.125rem; }
+.privacy-page p, .privacy-page li { line-height: 1.65; }
+.privacy-page a { color: var(--ink); text-underline-offset: 3px; overflow-wrap: anywhere; }
