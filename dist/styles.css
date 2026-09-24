@@ -1,22 +1,23 @@
 :root {
-  --canvas: #ead89a;
-  --panel: #fff;
-  --ink: #373b3f;
-  --muted: #51595f;
-  --subtle: #5d656b;
-  --line: #e2e1db;
-  --line-strong: #b89a00;
-  --yellow: #ffd329;
-  --yellow-soft: #fff4bb;
+  --canvas: #F5F1E6;
+  --panel: #FFFEFA;
+  --ink: #292A28;
+  --muted: #626158;
+  --subtle: #626158;
+  --line: #DED8CB;
+  --line-strong: #987627;
+  --yellow: #E4C875;
+  --yellow-hover: #D2B665;
+  --yellow-soft: #F4E9C9;
   --green: #25724a;
   --error: #9c304b;
-  --shadow: 0 16px 38px rgba(37, 43, 48, .075);
+  --shadow: 0 16px 38px rgba(41, 42, 40, .055);
   --radius-lg: 20px;
   --radius-md: 13px;
   --radius-sm: 9px;
-  --border-soft: #e1e5e8;
-  --border-control: #d6dde1;
-  --focus-ring: rgba(162, 130, 6, .28);
+  --border-soft: #DED8CB;
+  --border-control: #DED8CB;
+  --focus-ring: #8A6A1D;
   --radius-card: 18px;
   --radius-control: 11px;
 }
@@ -126,7 +127,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin-bottom: 23px;
   overflow: hidden;
   border-radius: 99px;
-  background: #eceff1;
+  background: #E9E3D6;
 }
 
 .progress-value {
@@ -180,7 +181,7 @@ legend, .field > span:first-child {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: #efeee9;
+  background: var(--canvas);
   cursor: zoom-in;
 }
 .gallery-stage:hover { border-color: var(--line-strong); }
@@ -252,7 +253,7 @@ legend, .field > span:first-child {
   border-radius: var(--radius-control);
   color: var(--ink);
   text-align: left;
-  background: #fff;
+  background: var(--panel);
   transition: border-color .16s ease, background .16s ease;
 }
 
@@ -269,9 +270,9 @@ legend, .field > span:first-child {
   flex: 0 0 auto;
   width: 17px;
   height: 17px;
-  border: 1px solid #c7c5bc;
+  border: 1px solid var(--line);
   border-radius: 50%;
-  background: #fffefa;
+  background: var(--panel);
 }
 
 .choice-card.selected .choice-mark {
@@ -290,11 +291,11 @@ input[type="text"], input[type="tel"], input[type="number"], select, textarea {
   border: 1px solid var(--border-control);
   border-radius: var(--radius-control);
   color: var(--ink);
-  background: #fff;
+  background: var(--panel);
 }
 
-input::placeholder, textarea::placeholder { color: #687177; }
-input[type="text"]:hover, input[type="tel"]:hover, input[type="number"]:hover, select:hover, textarea:hover { border-color: #aab4ba; }
+input::placeholder, textarea::placeholder { color: var(--muted); }
+input[type="text"]:hover, input[type="tel"]:hover, input[type="number"]:hover, select:hover, textarea:hover { border-color: var(--line-strong); }
 select {
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
@@ -340,7 +341,7 @@ textarea { min-height: 94px; resize: vertical; }
   padding: 18px;
   border: 1px dashed var(--border-control);
   border-radius: var(--radius-control);
-  background: #fff;
+  background: var(--panel);
   cursor: pointer;
 }
 
@@ -359,6 +360,7 @@ textarea { min-height: 94px; resize: vertical; }
   font-size: .76rem;
   font-weight: 700;
 }
+.file-drop:hover .upload-button { background: var(--yellow-hover); }
 
 .file-name {
   display: block;
@@ -402,9 +404,9 @@ input[type="file"] {
 .btn:hover { border-color: var(--line-strong); }
 .btn svg { width: 16px; height: 16px; }
 .btn.primary { min-width: 150px; color: var(--ink); background: var(--yellow); }
-.btn.primary:hover { background: #f5c400; }
+.btn.primary:hover { background: var(--yellow-hover); }
 .btn.ghost { color: var(--muted); border-color: var(--border-control); background: transparent; }
-.btn.ghost:hover { color: var(--ink); background: #f8f7f2; }
+.btn.ghost:hover { color: var(--ink); background: var(--canvas); }
 
 .result-view { padding: 24px; }
 .summary {
@@ -546,6 +548,12 @@ input[type="file"] {
   font-size: .9rem;
   font-weight: 700;
   text-align: center;
+}
+
+.form-card:has(.step-panel[data-step="0"]:not([hidden])) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .service-choice-grid {
