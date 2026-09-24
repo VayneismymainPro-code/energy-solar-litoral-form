@@ -1,0 +1,595 @@
+{
+  "summary": {
+    "startedAt": "2026-09-23T18:11:48.029Z",
+    "tesseractJsVersion": "7.0.0",
+    "language": "por",
+    "initializationMs": 248,
+    "imageCount": 8,
+    "recognitionCount": 32,
+    "modes": [
+      {
+        "id": "single-block",
+        "repetitions": 2
+      },
+      {
+        "id": "auto",
+        "repetitions": 1
+      },
+      {
+        "id": "sparse",
+        "repetitions": 1
+      }
+    ],
+    "missedBills": [],
+    "failures": [],
+    "memoryRssMb": 149,
+    "mixedBillRecognitions": [
+      {
+        "mode": "single-block",
+        "repetition": 1,
+        "id": "jewelry-beside-bill"
+      },
+      {
+        "mode": "single-block",
+        "repetition": 2,
+        "id": "jewelry-beside-bill"
+      },
+      {
+        "mode": "auto",
+        "repetition": 1,
+        "id": "jewelry-beside-bill"
+      },
+      {
+        "mode": "sparse",
+        "repetition": 1,
+        "id": "jewelry-beside-bill"
+      }
+    ]
+  },
+  "results": [
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "bill-clean",
+      "expectedBillOnly": true,
+      "confidence": 93,
+      "characters": 350,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "651045dde036",
+      "elapsedMs": 424
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "bill-phone-photo",
+      "expectedBillOnly": true,
+      "confidence": 61,
+      "characters": 456,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "91145357702a",
+      "elapsedMs": 809
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "jewelry-on-bill",
+      "expectedBillOnly": false,
+      "confidence": 38,
+      "characters": 513,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "0dbc5ecd6f97",
+      "elapsedMs": 1337
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "jewelry-beside-bill",
+      "expectedBillOnly": false,
+      "confidence": 56,
+      "characters": 777,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "11bf0249ef54",
+      "elapsedMs": 1804
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "jewelry-only",
+      "expectedBillOnly": false,
+      "confidence": 39,
+      "characters": 34,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "dcc55169aaaa",
+      "elapsedMs": 179
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "pattern-photo",
+      "expectedBillOnly": false,
+      "confidence": 40,
+      "characters": 334,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "43f39eeb9419",
+      "elapsedMs": 1066
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "solar-panels",
+      "expectedBillOnly": false,
+      "confidence": 32,
+      "characters": 423,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "76e191eea0eb",
+      "elapsedMs": 1378
+    },
+    {
+      "mode": "single-block",
+      "repetition": 1,
+      "id": "logo",
+      "expectedBillOnly": false,
+      "confidence": 37,
+      "characters": 4,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "1b7446315032",
+      "elapsedMs": 183
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "bill-clean",
+      "expectedBillOnly": true,
+      "confidence": 93,
+      "characters": 350,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "651045dde036",
+      "elapsedMs": 345
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "bill-phone-photo",
+      "expectedBillOnly": true,
+      "confidence": 61,
+      "characters": 456,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "91145357702a",
+      "elapsedMs": 754
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "jewelry-on-bill",
+      "expectedBillOnly": false,
+      "confidence": 38,
+      "characters": 513,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "0dbc5ecd6f97",
+      "elapsedMs": 1342
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "jewelry-beside-bill",
+      "expectedBillOnly": false,
+      "confidence": 56,
+      "characters": 777,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "11bf0249ef54",
+      "elapsedMs": 1909
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "jewelry-only",
+      "expectedBillOnly": false,
+      "confidence": 39,
+      "characters": 34,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "dcc55169aaaa",
+      "elapsedMs": 174
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "pattern-photo",
+      "expectedBillOnly": false,
+      "confidence": 40,
+      "characters": 334,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "43f39eeb9419",
+      "elapsedMs": 1129
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "solar-panels",
+      "expectedBillOnly": false,
+      "confidence": 32,
+      "characters": 423,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "76e191eea0eb",
+      "elapsedMs": 1442
+    },
+    {
+      "mode": "single-block",
+      "repetition": 2,
+      "id": "logo",
+      "expectedBillOnly": false,
+      "confidence": 37,
+      "characters": 4,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "1b7446315032",
+      "elapsedMs": 179
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "bill-clean",
+      "expectedBillOnly": true,
+      "confidence": 95,
+      "characters": 347,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "17d24a14a1b1",
+      "elapsedMs": 380
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "bill-phone-photo",
+      "expectedBillOnly": true,
+      "confidence": 94,
+      "characters": 89,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "c81903101706",
+      "elapsedMs": 213
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "jewelry-on-bill",
+      "expectedBillOnly": false,
+      "confidence": 95,
+      "characters": 0,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "e3b0c44298fc",
+      "elapsedMs": 124
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "jewelry-beside-bill",
+      "expectedBillOnly": false,
+      "confidence": 91,
+      "characters": 468,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "5a17c09d2191",
+      "elapsedMs": 688
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "jewelry-only",
+      "expectedBillOnly": false,
+      "confidence": 95,
+      "characters": 0,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "e3b0c44298fc",
+      "elapsedMs": 88
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "pattern-photo",
+      "expectedBillOnly": false,
+      "confidence": 95,
+      "characters": 0,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "e3b0c44298fc",
+      "elapsedMs": 108
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "solar-panels",
+      "expectedBillOnly": false,
+      "confidence": 95,
+      "characters": 0,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "e3b0c44298fc",
+      "elapsedMs": 129
+    },
+    {
+      "mode": "auto",
+      "repetition": 1,
+      "id": "logo",
+      "expectedBillOnly": false,
+      "confidence": 95,
+      "characters": 0,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "e3b0c44298fc",
+      "elapsedMs": 100
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "bill-clean",
+      "expectedBillOnly": true,
+      "confidence": 94,
+      "characters": 354,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "6d318e0e3982",
+      "elapsedMs": 360
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "bill-phone-photo",
+      "expectedBillOnly": true,
+      "confidence": 71,
+      "characters": 407,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "4681fe573b52",
+      "elapsedMs": 504
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "jewelry-on-bill",
+      "expectedBillOnly": false,
+      "confidence": 45,
+      "characters": 340,
+      "terms": {
+        "document": true,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "7783485538d1",
+      "elapsedMs": 718
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "jewelry-beside-bill",
+      "expectedBillOnly": false,
+      "confidence": 79,
+      "characters": 564,
+      "terms": {
+        "document": true,
+        "energy": true,
+        "usage": true
+      },
+      "ocrOnlyWouldApprove": true,
+      "ocrDecision": "conta_lida",
+      "textHash": "d991017f75ae",
+      "elapsedMs": 828
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "jewelry-only",
+      "expectedBillOnly": false,
+      "confidence": 29,
+      "characters": 6,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "8d4d98963f5b",
+      "elapsedMs": 115
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "pattern-photo",
+      "expectedBillOnly": false,
+      "confidence": 40,
+      "characters": 72,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "654e994a5552",
+      "elapsedMs": 232
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "solar-panels",
+      "expectedBillOnly": false,
+      "confidence": 38,
+      "characters": 165,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "4bf3f5b28a2d",
+      "elapsedMs": 508
+    },
+    {
+      "mode": "sparse",
+      "repetition": 1,
+      "id": "logo",
+      "expectedBillOnly": false,
+      "confidence": 67,
+      "characters": 12,
+      "terms": {
+        "document": false,
+        "energy": false,
+        "usage": false
+      },
+      "ocrOnlyWouldApprove": false,
+      "ocrDecision": "incerta",
+      "textHash": "3e09a88c09fb",
+      "elapsedMs": 214
+    }
+  ]
+}

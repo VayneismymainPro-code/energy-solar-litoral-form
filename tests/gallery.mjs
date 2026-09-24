@@ -12,6 +12,10 @@ page.on('pageerror', error => errors.push(error.message));
 page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
 const gallery = page.locator('#service-gallery');
 const main = page.locator('#gallery-main');
+const zoom = page.locator('#gallery-open');
+const dialog = page.locator('#gallery-dialog');
+const dialogPhoto = page.locator('#gallery-dialog-image');
+const dialogClose = page.locator('#gallery-dialog-close');
 const thumbs = page.locator('.gallery-thumb');
 const selected = async () => new URL(await main.getAttribute('src'), page.url()).pathname;
 const assertLoaded = async () => page.waitForFunction(() => {
@@ -28,6 +32,8 @@ try {
   assert.equal(await gallery.isVisible(), false, 'No gallery on service choice');
   await page.locator('[data-service="solar"]').click();
   assert.ok(await gallery.isVisible());
+  assert.equal(await zoom.count(), 1, 'Main photo should be a keyboard-accessible zoom control');
+  assert.equal(await zoom.getAttribute('aria-haspopup'), 'dialog');
   assert.equal(await selected(), '/assets/solar-01.jpg');
   assert.equal(await thumbs.count(), 3);
   assert.equal(await thumbs.nth(0).getAttribute('aria-pressed'), 'true');
@@ -36,15 +42,30 @@ try {
   await assertLoaded();
   await assertContained();
   const initialHeight = await gallery.evaluate(element => element.getBoundingClientRect().height);
-  assert.ok(initialHeight <= 310, `Mobile gallery is too tall: ${initialHeight}`);
+  assert.ok(initialHeight <= 235, `Mobile gallery is too tall: ${initialHeight}`);
   assert.equal(await page.locator('#city-solar').isVisible(), true);
   await page.screenshot({ path: 'outputs/gallery-qa/solar-mobile.png', fullPage: true });
+  await zoom.focus();
+  await page.keyboard.press('Enter');
+  assert.ok(await dialog.isVisible(), 'Keyboard activation opens the accessible image dialog');
+  assert.equal(new URL(await dialogPhoto.getAttribute('src'), page.url()).pathname, await selected());
+  assert.match(await dialogPhoto.getAttribute('alt'), /Painéis solares/);
+  await page.screenshot({ path: 'outputs/gallery-qa/solar-mobile-zoom.png', fullPage: true });
+  await dialogClose.click();
+  assert.equal(await dialog.isVisible(), false, 'Close control dismisses the image dialog');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'gallery-open', 'Closing restores focus to the image control');
   await thumbs.nth(1).click();
   assert.equal(await selected(), '/assets/solar-02.jpg');
   assert.equal(await page.locator('#gallery-counter').innerText(), 'Foto 2 de 3');
   await assertLoaded();
   await assertContained();
   assert.equal(await thumbs.nth(1).getAttribute('aria-pressed'), 'true');
+  await zoom.click();
+  assert.ok(await dialog.isVisible());
+  assert.equal(new URL(await dialogPhoto.getAttribute('src'), page.url()).pathname, await selected(), 'Zoom follows the selected thumbnail');
+  await page.keyboard.press('Escape');
+  assert.equal(await dialog.isVisible(), false, 'Escape dismisses the image dialog');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'gallery-open');
   await thumbs.nth(2).focus();
   await page.keyboard.press('Enter');
   assert.equal(await selected(), '/assets/solar-03.jpg');
@@ -69,6 +90,19 @@ try {
   assert.equal(await thumbs.nth(0).getAttribute('aria-pressed'), 'true');
   await assertLoaded();
   await assertContained();
+  const patternMobileHeight = await gallery.evaluate(element => element.getBoundingClientRect().height);
+  assert.ok(patternMobileHeight <= 235, `Mobile poste gallery is too tall: ${patternMobileHeight}`);
+  const patternMobileStage = await page.locator('.gallery-stage').evaluate(element => {
+    const { width, height } = element.getBoundingClientRect();
+    return { width, height };
+  });
+  assert.ok(patternMobileStage.height > patternMobileStage.width, 'Mobile poste preview keeps a compact vertical frame');
+  await zoom.click();
+  assert.ok(await dialog.isVisible(), 'Poste photo can also be enlarged on mobile');
+  assert.equal(new URL(await dialogPhoto.getAttribute('src'), page.url()).pathname, await selected());
+  assert.match(await dialogPhoto.getAttribute('alt'), /Padrão de entrada/);
+  await page.keyboard.press('Escape');
+  assert.equal(await dialog.isVisible(), false);
   await page.screenshot({ path: 'outputs/gallery-qa/pattern-mobile.png', fullPage: true });
   await thumbs.nth(1).focus();
   await page.keyboard.press('Enter');
@@ -80,12 +114,44 @@ try {
   await page.locator('#back-button').click();
   await page.locator('[data-service="solar"]').click();
   assert.equal(await selected(), '/assets/solar-03.jpg', 'Separate selection per service');
+  await page.setViewportSize({ width: 768, height: 900 });
+  const solarBreakpointLayout = await page.evaluate(() => {
+    const fields = document.querySelector('#solar-context').getBoundingClientRect();
+    const gallery = document.querySelector('#service-gallery').getBoundingClientRect();
+    const stage = document.querySelector('.gallery-stage').getBoundingClientRect();
+    return { fieldsRight: fields.right, galleryLeft: gallery.left, stageWidth: stage.width, stageHeight: stage.height };
+  });
+  assert.ok(solarBreakpointLayout.galleryLeft >= solarBreakpointLayout.fieldsRight, 'Solar columns fit at the desktop breakpoint');
+  assert.ok(solarBreakpointLayout.stageWidth > solarBreakpointLayout.stageHeight, 'Solar frame stays horizontal at the desktop breakpoint');
   await page.setViewportSize({ width: 1440, height: 900 });
   await assertLayout();
+  const solarLayout = await page.evaluate(() => {
+    const fields = document.querySelector('#solar-context').getBoundingClientRect();
+    const gallery = document.querySelector('#service-gallery').getBoundingClientRect();
+    const stage = document.querySelector('.gallery-stage').getBoundingClientRect();
+    return { fieldsRight: fields.right, galleryLeft: gallery.left, fieldsTop: fields.top, galleryTop: gallery.top, stageWidth: stage.width, stageHeight: stage.height };
+  });
+  assert.ok(solarLayout.galleryLeft >= solarLayout.fieldsRight, 'Solar gallery sits beside the fields on desktop');
+  assert.ok(Math.abs(solarLayout.fieldsTop - solarLayout.galleryTop) < 2, 'Desktop columns align at the top');
+  assert.ok(solarLayout.stageWidth > solarLayout.stageHeight, 'Solar gallery uses a horizontal frame');
   await page.screenshot({ path: 'outputs/gallery-qa/solar-desktop.png', fullPage: true });
   await page.locator('#back-button').click();
   await page.locator('[data-service="pattern"]').click();
   assert.equal(await selected(), '/assets/pattern-03.jpg');
+  await page.setViewportSize({ width: 768, height: 900 });
+  const patternStage = await page.locator('.gallery-stage').evaluate(element => {
+    const { width, height } = element.getBoundingClientRect();
+    return { width, height };
+  });
+  assert.ok(patternStage.height > patternStage.width, 'Poste gallery uses a vertical frame on desktop');
+  const patternLayout = await page.evaluate(() => {
+    const fields = document.querySelector('#pattern-context').getBoundingClientRect();
+    const gallery = document.querySelector('#service-gallery').getBoundingClientRect();
+    return { fieldsRight: fields.right, galleryLeft: gallery.left, fieldsTop: fields.top, galleryTop: gallery.top };
+  });
+  assert.ok(patternLayout.galleryLeft >= patternLayout.fieldsRight, 'Poste columns fit at the desktop breakpoint');
+  assert.ok(Math.abs(patternLayout.fieldsTop - patternLayout.galleryTop) < 2, 'Poste desktop columns align at the top');
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: 'outputs/gallery-qa/pattern-desktop.png', fullPage: true });
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 844 });
@@ -96,6 +162,20 @@ try {
   await page.waitForFunction(() => getComputedStyle(document.documentElement).fontSize === '32px');
   await assertLayout();
   assert.ok(await thumbs.first().evaluate(button => button.getBoundingClientRect().right <= innerWidth));
+  await zoom.click();
+  assert.ok(await dialog.isVisible(), 'Image dialog remains available with enlarged text');
+  const dialogBounds = await dialog.evaluate(element => {
+    const { left, right } = element.getBoundingClientRect();
+    const closeRight = element.querySelector('#gallery-dialog-close').getBoundingClientRect().right;
+    return { left, right, closeRight, clientWidth: element.clientWidth, scrollWidth: element.scrollWidth, viewportWidth: innerWidth };
+  });
+  assert.ok(dialogBounds.left >= 0 && dialogBounds.right <= dialogBounds.viewportWidth, 'Image dialog stays within the narrow viewport');
+  assert.ok(dialogBounds.closeRight <= dialogBounds.right, 'Dialog close control stays within the viewport');
+  assert.ok(dialogBounds.scrollWidth <= dialogBounds.clientWidth, 'Dialog content does not scroll horizontally');
+  await page.screenshot({ path: 'outputs/gallery-qa/pattern-mobile-large-text-zoom.png', fullPage: true });
+  await page.keyboard.press('Escape');
+  assert.equal(await dialog.isVisible(), false);
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'gallery-open');
   await page.evaluate(() => { document.documentElement.style.fontSize = ''; });
   await page.locator('#city-pattern').fill('Pontal do Paraná');
   await page.locator('#property-pattern').selectOption('Residencial');

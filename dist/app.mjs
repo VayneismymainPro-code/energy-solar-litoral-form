@@ -69,9 +69,14 @@ function renderGallery() {
   if (!photos) return;
   const selected = gallerySelection[state.service];
   const main = photos[selected];
+  elements['service-gallery'].dataset.galleryService = state.service;
   elements['gallery-main'].src = main.src;
   elements['gallery-main'].alt = main.alt;
+  elements['gallery-open'].setAttribute('aria-label', `Ampliar foto ${selected + 1} de ${photos.length}: ${main.alt}`);
   elements['gallery-counter'].textContent = `Foto ${selected + 1} de ${photos.length}`;
+  elements['gallery-dialog-title'].textContent = `Foto ampliada — ${state.service === 'solar' ? 'Energia Solar' : 'Padrão / Poste'}`;
+  elements['gallery-dialog-image'].src = main.src;
+  elements['gallery-dialog-image'].alt = main.alt;
   elements['gallery-thumbs'].replaceChildren(...photos.map((photo, index) => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -99,8 +104,13 @@ function renderStep({ focus = true } = {}) {
   for (const id of ['head-meta', 'progress-track', 'action-row', 'back-button']) elements[id].hidden = start;
   elements['step-kicker'].textContent = label || '';
   elements['step-counter'].textContent = start ? '' : `${step} de 3`;
-  const titles = ['Solicite seu orçamento', `${label} — 1 de 3`, solar ? 'Qual o consumo médio de energia?' : 'Padrão / Poste — 2 de 3', 'Contato — 3 de 3'];
-  const descriptions = ['Responda algumas informações para nossa equipe analisar seu projeto.', 'Onde será feita a instalação?', solar ? 'Informe o consumo em kWh ou selecione uma foto da conta de luz.' : 'Adicione mais um detalhe do seu pedido.', 'Como nossa equipe pode falar com você?'];
+  const titles = ['Seu projeto começa aqui.', 'Onde será a instalação?', solar ? 'Qual é o consumo médio de energia?' : 'O que está definido até agora?', 'Como a equipe pode falar com você?'];
+  const descriptions = [
+    'Escolha um serviço e responda às perguntas para organizar seu pedido.',
+    solar ? 'Informe a cidade e o tipo de imóvel.' : 'Informe a cidade, o tipo de imóvel e o que você precisa resolver.',
+    solar ? 'Informe o consumo médio mensal em kWh ou selecione uma foto da conta de luz.' : 'Escolha uma opção e, se quiser, inclua uma foto do padrão ou do local.',
+    'Informe seu nome e WhatsApp. O melhor horário é opcional.'
+  ];
   elements['step-title'].textContent = titles[step];
   elements['step-description'].textContent = descriptions[step];
   elements['progress-value'].style.width = `${step / 3 * 100}%`;
@@ -181,6 +191,12 @@ form.addEventListener('click', (event) => {
     break;
   }
 });
+
+elements['gallery-open'].addEventListener('click', () => {
+  if (!elements['gallery-dialog'].open) elements['gallery-dialog'].showModal();
+});
+elements['gallery-dialog-close'].addEventListener('click', () => elements['gallery-dialog'].close());
+elements['gallery-dialog'].addEventListener('close', () => elements['gallery-open'].focus({ preventScroll: true }));
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();

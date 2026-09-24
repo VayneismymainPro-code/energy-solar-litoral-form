@@ -46,7 +46,7 @@ test('summary and WhatsApp share the same data and do not claim a photo was sent
   const data = { ...solar, consumption: '', photo: 'conta & luz.jpg', notes: '<script>texto</script>\nDúvida & instalação?' };
   const url = new URL(buildWhatsappUrl(data));
   assert.equal(url.hostname, 'wa.me');
-  assert.equal(url.pathname, '/554199587407');
+  assert.equal(url.pathname, '/5541995587407');
   const message = url.searchParams.get('text');
   assert.match(message, /^\*Pedido de orçamento\*\n\n\*Serviço e local\*\n/);
   assert.match(message, /• Energia Solar\n• Matinhos · Residencial\n/);
