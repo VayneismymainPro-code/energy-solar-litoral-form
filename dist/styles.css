@@ -16,7 +16,7 @@
   --radius-md: 13px;
   --radius-sm: 9px;
   --border-soft: #DED8CB;
-  --border-control: #DED8CB;
+  --border-control: #92866E;
   --focus-ring: #8A6A1D;
   --radius-card: 18px;
   --radius-control: 11px;
@@ -179,7 +179,7 @@ legend, .field > span:first-child {
   height: 138px;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius-md);
   background: var(--canvas);
   cursor: zoom-in;
@@ -206,7 +206,7 @@ legend, .field > span:first-child {
   height: 56px;
   padding: 2px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-control);
   border-radius: 7px;
   background: var(--panel);
 }
@@ -249,7 +249,7 @@ legend, .field > span:first-child {
   gap: 14px;
   min-height: 72px;
   padding: 16px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius-control);
   color: var(--ink);
   text-align: left;
@@ -270,7 +270,7 @@ legend, .field > span:first-child {
   flex: 0 0 auto;
   width: 17px;
   height: 17px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-control);
   border-radius: 50%;
   background: var(--panel);
 }
@@ -306,6 +306,7 @@ select {
 
 textarea { min-height: 94px; resize: vertical; }
 .helper { display: block; margin-top: 8px; color: var(--subtle); font-size: .875rem; }
+.privacy-note, .edit-note { margin: 16px 0 0; color: var(--muted); font-size: .875rem; line-height: 1.45; }
 .unit-input { position: relative; }
 .unit-input input { padding-right: 103px; }
 .unit-suffix {
@@ -369,6 +370,20 @@ textarea { min-height: 94px; resize: vertical; }
   font-size: .875rem;
   overflow-wrap: anywhere;
 }
+
+.remove-file {
+  margin: 8px 0 0;
+  padding: 4px 0;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-size: .8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.remove-file:hover { color: var(--ink); }
+.remove-file:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 
 input[type="file"] {
   position: absolute;

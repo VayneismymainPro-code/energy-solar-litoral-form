@@ -14,22 +14,24 @@ Formulário de orçamento em três etapas para Energia Solar e Padrão/Poste, co
 ## Fluxo
 
 1. A pessoa escolhe o serviço, preenche os dados e pode selecionar uma foto JPG/PNG/WebP de até **4 MB**.
-2. A Function valida e decodifica a imagem real. Para Energia Solar, a foto da conta de luz passa pelo Tesseract OCR; se não houver texto suficiente, o cliente tenta outra foto ou informa o consumo manualmente. Para Padrão/Poste não há OCR.
-3. Após a API salvar o pedido e a foto, a página mostra um ID e o link para a conversa de WhatsApp. A mensagem leva o ID; o cliente não precisa anexar a foto outra vez.
+2. A Function valida e decodifica a imagem real. Para Energia Solar, a foto da conta de luz passa pelo Tesseract OCR; se não houver texto suficiente, o cliente pode escolher outra foto ou remover a imagem e informar o consumo manualmente. Para Padrão/Poste não há OCR.
+3. Após a API registrar o pedido e, quando houver, salvar a foto, a página confirma o registro e mostra o link para o WhatsApp. O ID fica nos registros internos; a mensagem não o inclui e a pessoa não precisa anexar a foto outra vez.
 4. Um usuário do Netlify Identity com papel **`admin`** vê pedidos e fotos no painel `/admin.html`. As rotas `/api/orders` e `/api/photo` exigem o papel no servidor. Pedidos e fotos expiram após **30 dias**; uma Function agendada roda diariamente.
 
-O OCR apenas identifica termos de conta de energia; não prova autenticidade e não barra joias ou outros objetos na imagem. O número WhatsApp é o valor já existente no projeto (`554199587407`); sua titularidade e recebimento real não foram confirmados.
+O OCR apenas identifica termos de conta de energia; não prova autenticidade e não barra joias ou outros objetos na imagem. O destino WhatsApp `5541995587407` foi confirmado pelo responsável pelo projeto. O recebimento real de pedidos ainda não foi verificado.
 
 ## Desenvolvimento local
 
-Instale dependências e inicie o runtime Netlify:
+Com as dependências do projeto e o Netlify CLI instalados, inicie o runtime local completo:
 
 ```powershell
 npm install
-npx netlify dev --offline --port 8888 --dir dist
+netlify dev --offline --port 8888 --no-open
 ```
 
-Abra `http://127.0.0.1:8888/`. Servir somente `dist/` com `python -m http.server` mostra a interface, mas **não** registra pedidos nem executa OCR. Netlify Dev usa um armazenamento local isolado; não acessa as fotos de produção.
+Abra `http://127.0.0.1:8888/`. Não passe `--dir dist`: essa opção inicia um servidor estático simples e não valida corretamente as Functions. A pasta pública já vem de `netlify.toml`. Servir somente `dist/` com `python -m http.server` mostra a interface, mas **não** registra pedidos nem executa OCR. Netlify Dev usa um armazenamento local isolado; não acessa as fotos de produção.
+
+Se uma alteração em `dist/form-core.mjs` causar erro ao recarregar a Function local, reinicie o Netlify Dev para reconstruir o runtime antes de repetir o teste.
 
 O site está publicado em https://energy-solar-litoral-form.netlify.app/. O Netlify Identity está habilitado com inscrição apenas por convite; atribua o papel `admin` somente aos atendentes autorizados. O login do painel usa `/api/login`; as rotas privadas verificam o papel também no servidor. Não compartilhe credenciais em arquivos do repositório.
 

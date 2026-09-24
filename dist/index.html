@@ -139,6 +139,7 @@
                 <span class="file-name" id="bill-file-name">Nenhuma imagem selecionada</span>
                 <input type="file" id="bill-photo" accept="image/jpeg,image/png,image/webp" aria-label="Foto da conta de luz" aria-describedby="bill-photo-help bill-file-name">
               </label>
+              <button class="remove-file" type="button" id="clear-bill-photo" hidden>Remover foto selecionada</button>
             </div>
 
             <div id="pattern-evidence" hidden>
@@ -156,6 +157,7 @@
                 <span class="file-name" id="pattern-file-name">Nenhuma imagem selecionada</span>
                 <input type="file" id="pattern-photo" accept="image/jpeg,image/png,image/webp" aria-label="Foto do padrão ou do local" aria-describedby="pattern-photo-help pattern-file-name">
               </label>
+              <button class="remove-file" type="button" id="clear-pattern-photo" hidden>Remover foto selecionada</button>
             </div>
           </section>
 
@@ -185,6 +187,8 @@
               <span>Algum detalhe importante <span class="optional">(opcional)</span></span>
               <textarea id="notes" maxlength="1000" placeholder="Ex.: obra em andamento, urgência ou dúvida específica."></textarea>
             </label>
+            <p class="privacy-note" id="privacy-note">Os dados do pedido e as fotos enviadas ficam disponíveis à equipe por 30 dias.</p>
+            <p class="edit-note" id="edit-note" role="status" aria-live="polite" hidden>O pedido anterior já foi registrado. Se enviar novamente, outro pedido será criado.</p>
           </section>
 
           <p class="error-message" id="error-message" role="alert" aria-live="polite" tabindex="-1"></p>

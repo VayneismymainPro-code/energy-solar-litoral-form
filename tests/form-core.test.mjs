@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { formatPhone, isValidPhone, validateStep, validatePhoto, MAX_PHOTO_BYTES, summaryRows, buildWhatsappUrl } from '../dist/form-core.mjs';
+import { FORM_ERRORS, fieldsForActiveService, formatPhone, isValidPhone, validateStep, validatePhoto, MAX_PHOTO_BYTES, summaryRows, buildWhatsappUrl } from '../dist/form-core.mjs';
+import { submissionErrorMessage } from '../dist/submission-error.mjs';
 
 const solar = { service: 'solar', city: 'Matinhos', property: 'Residencial', consumption: '450.5', name: 'Teste local', phone: '(41) 99999-9999', photo: '', bestTime: '', notes: '' };
 
@@ -75,6 +76,65 @@ test('WhatsApp request omits absent photo and includes only the selected service
   assert.match(pattern, /• Projeto ou orientação: Ainda não\n/);
   assert.match(pattern, /• Foto do local: vou anexar nesta conversa\n/);
   assert.doesNotMatch(pattern, /Consumo|Conta de luz|local.jpg/);
+});
+
+test('submission data excludes answers that belong to the other service', () => {
+  const solarData = fieldsForActiveService({ ...solar, serviceCase: 'Troca ou adequação', project: 'Ainda não' });
+  assert.equal(solarData.serviceCase, '');
+  assert.equal(solarData.project, '');
+  const patternData = fieldsForActiveService({ ...solar, service: 'pattern', consumption: '450.5' });
+  assert.equal(patternData.consumption, '');
+});
+
+test('customer summary and WhatsApp omit unselected optional photo and time', () => {
+  const data = { ...solar, photo: '', bestTime: '' };
+  const rows = summaryRows(data);
+  assert.doesNotMatch(JSON.stringify(rows), /Conta de luz|Foto do local|Não selecionada|Melhor horário|A combinar/);
+  const message = new URL(buildWhatsappUrl(data)).searchParams.get('text');
+  assert.doesNotMatch(message, /Conta de luz|Foto|Não selecionada|Melhor horário|A combinar/);
+
+  const withPhoto = summaryRows({ ...data, photo: 'conta.png' }, { photoStored: true });
+  assert.ok(withPhoto.some(([label, value]) => label === 'Conta de luz' && value === 'Recebida pelo formulário'));
+  const photoMessage = new URL(buildWhatsappUrl({ ...data, photo: 'conta.png' }, { photoStored: true })).searchParams.get('text');
+  assert.match(photoMessage, /Foto da conta: enviada pelo formulário/);
+
+  const photoOnly = summaryRows({ ...data, consumption: '', photo: 'conta.png' }, { photoStored: true });
+  assert.equal(photoOnly.find(([label]) => label === 'Consumo médio')[1], 'Conferir a conta de luz recebida pelo formulário');
+  assert.ok(!photoOnly.some(([label]) => label === 'Conta de luz'), 'Do not repeat the received-photo status');
+});
+
+test('submission failures give a useful next step without exposing server details', () => {
+  for (const message of Object.values(FORM_ERRORS)) {
+    assert.equal(submissionErrorMessage({ status: 400, message }), message);
+  }
+  const unreadableBill = submissionErrorMessage({
+    status: 400,
+    message: 'Não conseguimos ler uma conta de luz nessa foto. Envie outra ou informe o consumo.'
+  });
+  const unavailableOcr = submissionErrorMessage({
+    status: 503,
+    message: 'Não foi possível analisar a conta agora. Tente outra foto ou informe o consumo.'
+  });
+  assert.match(unreadableBill, /remova a foto para informar o consumo/);
+  assert.match(unavailableOcr, /remova a foto para informar o consumo/);
+  assert.notEqual(unreadableBill, unavailableOcr);
+
+  const serverFailure = submissionErrorMessage({
+    status: 500,
+    message: 'Error: Cannot find module netlify/lib/order.mjs',
+    responseParsed: false
+  });
+  assert.match(serverFailure, /confirmar o registro/);
+  assert.match(serverFailure, /continuam aqui/);
+  assert.doesNotMatch(serverFailure, /Error|module|Netlify|Tesseract/i);
+
+  const connectionFailure = submissionErrorMessage({ networkError: true });
+  assert.match(connectionFailure, /confirmar se o pedido foi registrado/);
+  assert.match(connectionFailure, /confira com o atendimento antes de reenviar/i);
+  assert.match(connectionFailure, /continuam aqui/);
+  assert.match(submissionErrorMessage({ status: 429 }), /Aguarde um pouco/);
+  assert.match(submissionErrorMessage({ status: 413 }), /4 MB/);
+  assert.match(submissionErrorMessage({ status: 403 }), /Atualize a página/);
 });
 
 test('scientific consumption appears as an ordinary number in summary and WhatsApp', () => {

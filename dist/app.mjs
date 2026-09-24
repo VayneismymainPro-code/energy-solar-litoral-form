@@ -1,4 +1,5 @@
-import { SERVICE_LABELS, formatPhone, validatePhoto, validateStep, summaryRows } from './form-core.mjs';
+import { SERVICE_LABELS, fieldsForActiveService, formatPhone, validatePhoto, validateStep, summaryRows } from './form-core.mjs';
+import { submissionErrorMessage } from './submission-error.mjs';
 
 if (new URLSearchParams(location.hash.slice(1)).has('invite_token')) {
   location.replace(`/admin.html${location.hash}`);
@@ -23,13 +24,14 @@ const galleryPhotos = {
 };
 const gallerySelection = { solar: 0, pattern: 0 };
 const files = [
-  { input: elements['bill-photo'], label: elements['bill-file-name'] },
-  { input: elements['pattern-photo'], label: elements['pattern-file-name'] }
+  { input: elements['bill-photo'], label: elements['bill-file-name'], clearButton: elements['clear-bill-photo'] },
+  { input: elements['pattern-photo'], label: elements['pattern-file-name'], clearButton: elements['clear-pattern-photo'] }
 ];
 let invalidControl;
-let isSubmitting = false;
+let hasSubmittedOrder = false;
 
 function clearError() {
+  if (!invalidControl && !elements['error-message'].textContent) return;
   elements['error-message'].textContent = '';
   if (invalidControl) {
     invalidControl.removeAttribute('aria-invalid');
@@ -49,6 +51,12 @@ function showError({ field, message }) {
     invalidControl.setAttribute('aria-describedby', `${invalidControl.getAttribute('aria-describedby') || ''} error-message`.trim());
     invalidControl.focus();
   }
+}
+
+function showSubmissionError(message) {
+  clearError();
+  elements['error-message'].textContent = message;
+  elements['error-message'].focus();
 }
 
 function selectOption(key, value) {
@@ -74,7 +82,7 @@ function renderGallery() {
   elements['gallery-main'].alt = main.alt;
   elements['gallery-open'].setAttribute('aria-label', `Ampliar foto ${selected + 1} de ${photos.length}: ${main.alt}`);
   elements['gallery-counter'].textContent = `Foto ${selected + 1} de ${photos.length}`;
-  elements['gallery-dialog-title'].textContent = `Foto ampliada — ${state.service === 'solar' ? 'Energia Solar' : 'Padrão / Poste'}`;
+  elements['gallery-dialog-title'].textContent = `Foto ampliada — ${SERVICE_LABELS[state.service]}`;
   elements['gallery-dialog-image'].src = main.src;
   elements['gallery-dialog-image'].alt = main.alt;
   elements['gallery-thumbs'].replaceChildren(...photos.map((photo, index) => {
@@ -113,6 +121,7 @@ function renderStep({ focus = true } = {}) {
   ];
   elements['step-title'].textContent = titles[step];
   elements['step-description'].textContent = descriptions[step];
+  elements['edit-note'].hidden = step !== 3 || !hasSubmittedOrder;
   elements['progress-value'].style.width = `${step / 3 * 100}%`;
   elements['progress-track'].setAttribute('aria-valuenow', String(step));
   elements['progress-track'].setAttribute('aria-valuetext', `Etapa ${step} de 3`);
@@ -134,7 +143,7 @@ function renderStep({ focus = true } = {}) {
 function readData() {
   const value = (id) => elements[id].value.trim();
   const photoInput = state.service === 'solar' ? elements['bill-photo'] : elements['pattern-photo'];
-  return {
+  return fieldsForActiveService({
     service: state.service,
     city: value(`city-${state.service}`),
     property: value(`property-${state.service}`),
@@ -143,7 +152,7 @@ function readData() {
     consumption: value('consumption'),
     photo: photoInput.files[0]?.name || '',
     name: value('name'), phone: value('phone'), bestTime: value('best-time'), notes: value('notes')
-  };
+  });
 }
 
 function showResult(data, submitted) {
@@ -162,10 +171,12 @@ function showResult(data, submitted) {
   elements['result-meta-text'].textContent = submitted.photoStored
     ? 'Pedido e foto registrados. Abra o WhatsApp e envie a mensagem para iniciar a conversa.'
     : 'Pedido registrado. Abra o WhatsApp e envie a mensagem para iniciar a conversa.';
+  hasSubmittedOrder = true;
+  elements['edit-note'].hidden = true;
   elements['head-meta'].hidden = true;
   elements['progress-track'].hidden = true;
   elements['step-title'].textContent = 'Pedido registrado';
-  elements['step-description'].textContent = `Referência ${submitted.id}. Confira os dados e envie a mensagem pelo WhatsApp.`;
+  elements['step-description'].textContent = 'Confira os dados e continue pelo WhatsApp.';
   form.hidden = true;
   elements['result-view'].hidden = false;
   focusHeading();
@@ -200,7 +211,7 @@ elements['gallery-dialog'].addEventListener('close', () => elements['gallery-ope
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  if (!state.step || isSubmitting) return;
+  if (!state.step || elements['next-button'].disabled) return;
   const data = readData();
   // Validate previous steps again when editing a completed request.
   const steps = state.step === 3 ? [1, 2, 3] : [state.step];
@@ -220,19 +231,36 @@ form.addEventListener('submit', async (event) => {
   payload.set('website', elements.website.value);
   const selectedFile = (state.service === 'solar' ? elements['bill-photo'] : elements['pattern-photo']).files[0];
   if (selectedFile) payload.set('photo', selectedFile);
-  isSubmitting = true;
   elements['next-button'].disabled = true;
   elements['next-label'].textContent = 'Enviando pedido…';
   try {
-    const response = await fetch('/api/submit', { method: 'POST', body: payload });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'Não foi possível registrar o pedido.');
+    let response;
+    try {
+      response = await fetch('/api/submit', { method: 'POST', body: payload });
+    } catch {
+      showSubmissionError(submissionErrorMessage({ networkError: true }));
+      return;
+    }
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      showSubmissionError(submissionErrorMessage({ status: response.status, responseParsed: false }));
+      return;
+    }
+    if (!response.ok) {
+      showSubmissionError(submissionErrorMessage({
+        status: response.status,
+        message: typeof result?.error === 'string' ? result.error : ''
+      }));
+      return;
+    }
+    if (typeof result?.id !== 'string' || typeof result.whatsappUrl !== 'string' || typeof result.photoStored !== 'boolean') {
+      showSubmissionError(submissionErrorMessage({ status: response.status, responseParsed: false }));
+      return;
+    }
     showResult(data, result);
-  } catch (error) {
-    elements['error-message'].textContent = error.message || 'Atendimento indisponível. Tente novamente.';
-    elements['error-message'].focus();
   } finally {
-    isSubmitting = false;
     elements['next-button'].disabled = false;
     if (!form.hidden) elements['next-label'].textContent = 'Enviar pedido';
   }
@@ -247,23 +275,35 @@ elements.phone.addEventListener('blur', () => { elements.phone.value = formatPho
 form.addEventListener('input', clearError);
 form.addEventListener('change', (event) => { if (event.target.type !== 'file') clearError(); });
 
-files.forEach(({ input, label }) => {
+files.forEach(({ input, label, clearButton }) => {
   input.addEventListener('change', () => {
     clearError();
     const file = input.files[0];
     const message = validatePhoto(file);
     if (message) input.value = '';
     label.textContent = !message && file ? file.name : 'Nenhuma imagem selecionada';
+    clearButton.hidden = Boolean(message) || !file;
     if (message) showError({ field: input.id, message });
+  });
+  clearButton.addEventListener('click', () => {
+    input.value = '';
+    label.textContent = 'Nenhuma imagem selecionada';
+    clearButton.hidden = true;
+    clearError();
+    input.focus();
   });
 });
 
 elements['restart-button'].addEventListener('click', () => {
   Object.assign(state, { step: 0, service: '', serviceCase: '', project: '' });
+  hasSubmittedOrder = false;
   gallerySelection.solar = 0;
   gallerySelection.pattern = 0;
   form.reset();
-  files.forEach(({ label }) => { label.textContent = 'Nenhuma imagem selecionada'; });
+  files.forEach(({ label, clearButton }) => {
+    label.textContent = 'Nenhuma imagem selecionada';
+    clearButton.hidden = true;
+  });
   for (const key of ['service', 'case', 'project']) selectOption(key, '');
   elements.summary.replaceChildren();
   elements['send-whatsapp'].removeAttribute('href');

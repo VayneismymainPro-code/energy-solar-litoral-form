@@ -9,8 +9,9 @@ const { chromium } = require('playwright');
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
 const errors = [];
+let expectedSubmissionFailure = false;
 page.on('pageerror', (error) => errors.push(error.message));
-page.on('response', (response) => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+page.on('response', (response) => { if (response.status() >= 400 && !expectedSubmissionFailure) errors.push(`${response.status()} ${response.url()}`); });
 const field = (id) => page.locator(`#${id}`);
 const click = (id) => field(id).click();
 const next = () => click('next-button');
@@ -45,6 +46,7 @@ try {
   await next();
   assert.equal(await field('phone').getAttribute('aria-invalid'), 'true');
   await field('phone').fill('+55 (41) 99999-9999');
+  assert.match(await field('privacy-note').innerText(), /30 dias/);
   await field('notes').fill('<img src=x onerror=alert(1)> & ' + 'observação'.repeat(80));
   await next();
   await visible('result-view');
@@ -53,9 +55,14 @@ try {
   assert.equal(firstUrl.pathname, '/5541995587407', 'Solar request targets the confirmed WhatsApp number');
   assert.ok(firstUrl.searchParams.get('text').includes('*Consumo*\n• 450.5 kWh/mês'));
   assert.ok(!firstUrl.searchParams.get('text').includes('Não selecionada'));
+  const internalId = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i;
+  assert.doesNotMatch(firstUrl.searchParams.get('text'), internalId);
+  assert.doesNotMatch(await field('step-description').textContent(), internalId);
+  assert.doesNotMatch(await field('summary').innerText(), /Não selecionada|A combinar/);
   assert.ok(firstUrl.searchParams.get('text').includes('(41) 99999-9999'));
   await layout();
   await click('edit-button');
+  assert.match(await field('edit-note').innerText(), /pedido anterior já foi registrado/);
   assert.equal(await field('name').inputValue(), 'Teste local');
   await field('name').fill('Nome corrigido');
   await next();
@@ -79,6 +86,12 @@ try {
   await field('bill-photo').setInputFiles({ ...photo, buffer: Buffer.alloc(4 * 1024 * 1024 + 1) });
   assert.match(await field('error-message').textContent(), /4 MB/);
   await field('bill-photo').setInputFiles(photo);
+  assert.equal(await field('clear-bill-photo').isVisible(), true);
+  await click('clear-bill-photo');
+  assert.equal(await field('bill-photo').evaluate((input) => input.files.length), 0);
+  assert.equal(await field('clear-bill-photo').isVisible(), false);
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'bill-photo');
+  await field('bill-photo').setInputFiles(photo);
   await field('consumption').fill('');
   await page.setViewportSize({ width: 390, height: 844 });
   await field('bill-photo').focus();
@@ -88,7 +101,8 @@ try {
   await next();
   await next();
   await visible('result-view');
-  assert.match(await field('summary').textContent(), /Recebida pelo formulário/);
+  assert.match(await field('summary').textContent(), /conta de luz recebida pelo formulário/i);
+  assert.doesNotMatch(await field('summary').textContent(), /Conta de luz\s+Recebida pelo formulário/);
   assert.doesNotMatch(await field('summary').textContent(), /Foto da conta anexada/);
   await layout();
   await page.screenshot({ path: 'outputs/refactor/mobile-resumo.png', fullPage: true });
@@ -119,6 +133,7 @@ try {
   await next();
   await visible('result-view');
   assert.match(await field('summary').textContent(), /Troca ou adequação/);
+  assert.doesNotMatch(await field('summary').textContent(), /Não selecionada|A combinar/);
   assert.doesNotMatch(await field('summary').textContent(), /conta-de-luz|Consumo médio/);
   const patternMessage = new URL(await field('send-whatsapp').getAttribute('href')).searchParams.get('text');
   assert.equal(new URL(await field('send-whatsapp').getAttribute('href')).pathname, '/5541995587407', 'Pattern request targets the confirmed WhatsApp number');
@@ -127,6 +142,29 @@ try {
   assert.doesNotMatch(patternMessage, /Não selecionada|Conta de luz/);
   await layout();
   await page.screenshot({ path: 'outputs/refactor/mobile-poste.png', fullPage: true });
+
+  await click('edit-button');
+  await field('notes').fill('Ajuste fictício');
+  const contactBeforeFailure = await field('name').inputValue();
+  await page.unroute('**/api/submit');
+  await page.route('**/api/submit', route => route.fulfill({
+    status: 500,
+    contentType: 'text/plain',
+    body: 'Error: Cannot find module netlify/lib/order.mjs'
+  }));
+  expectedSubmissionFailure = true;
+  const failedSubmission = page.waitForResponse((response) => response.url().includes('/api/submit') && response.status() === 500);
+  await Promise.all([failedSubmission, next()]);
+  await page.waitForFunction(() => document.querySelector('#error-message')?.textContent?.includes('Não foi possível confirmar o registro'));
+  expectedSubmissionFailure = false;
+  assert.match(await field('error-message').innerText(), /Não foi possível confirmar o registro/);
+  assert.doesNotMatch(await field('error-message').innerText(), /Error|module|Netlify|Tesseract/i);
+  assert.equal(await field('name').inputValue(), contactBeforeFailure, 'Failed submissions preserve the contact data');
+  assert.equal(await field('phone').inputValue(), '(41) 3333-4444', 'Failed submissions preserve the phone');
+  await page.unroute('**/api/submit');
+  await mockSubmit(page);
+  await next();
+  await visible('result-view');
   await click('restart-button');
   await page.locator('[data-service="solar"]').click();
   assert.equal(await field('city-solar').inputValue(), '');

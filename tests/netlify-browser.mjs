@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { localBaseUrl } from './local-base-url.mjs';
 
+const base = localBaseUrl('http://127.0.0.1:8888');
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true });
-const base = process.env.BASE_URL || 'http://127.0.0.1:8888';
 await mkdir('outputs/netlify-qa', { recursive: true });
 
 try {
@@ -17,13 +19,13 @@ try {
   await page.locator('#city-solar').fill('Matinhos');
   await page.locator('#property-solar').selectOption('Residencial');
   await page.locator('#next-button').click();
-  await page.locator('#bill-photo').setInputFiles('outputs/image-filter-pilot/conta-ficticia.png');
+  await page.locator('#bill-photo').setInputFiles(fileURLToPath(new URL('./fixtures/conta-ficticia.png', import.meta.url)));
   await page.locator('#next-button').click();
   await page.locator('#name').fill('Pessoa Teste');
   await page.locator('#phone').fill('(41) 99999-9999');
   await page.locator('#next-button').click();
   await page.locator('#result-view').waitFor({ state: 'visible', timeoutMs: 30000 });
-  assert.match(await page.locator('#summary').innerText(), /Recebida pelo formulário/);
+  assert.match(await page.locator('#summary').innerText(), /conta de luz recebida pelo formulário/i);
   assert.match(await page.locator('#step-title').innerText(), /Pedido registrado/);
   const message = new URL(await page.locator('#send-whatsapp').getAttribute('href')).searchParams.get('text');
   assert.match(message, /Conta enviada pelo formulário/);
@@ -44,6 +46,25 @@ try {
   await page.locator('#result-view').waitFor({ state: 'visible', timeoutMs: 30000 });
   assert.match(await page.locator('#summary').innerText(), /Instalação nova/);
   await page.screenshot({ path: 'outputs/netlify-qa/pattern-desktop-registrado.png', fullPage: true });
+
+  await page.locator('#restart-button').click();
+  await page.locator('[data-service="pattern"]').click();
+  await page.locator('#city-pattern').fill('Pontal do Paraná');
+  await page.locator('#property-pattern').selectOption('Residencial');
+  await page.locator('#next-button').click();
+  await page.locator('[data-case="Troca ou adequação"]').click();
+  await page.locator('#next-button').click();
+  await page.locator('[data-project="Sim, já tenho"]').click();
+  await page.locator('#pattern-photo').setInputFiles(fileURLToPath(new URL('./fixtures/conta-ficticia.png', import.meta.url)));
+  await page.locator('#next-button').click();
+  await page.locator('#name').fill('Pessoa Teste');
+  await page.locator('#phone').fill('(41) 3333-4444');
+  await page.locator('#next-button').click();
+  await page.locator('#result-view').waitFor({ state: 'visible', timeoutMs: 30000 });
+  assert.match(await page.locator('#summary').innerText(), /Foto do local\s+Recebida pelo formulário/);
+  const patternPhotoMessage = new URL(await page.locator('#send-whatsapp').getAttribute('href')).searchParams.get('text');
+  assert.match(patternPhotoMessage, /Foto do local: enviada pelo formulário/);
+  await page.screenshot({ path: 'outputs/netlify-qa/pattern-desktop-com-foto.png', fullPage: true });
   assert.deepEqual(errors, []);
   await page.close();
 
@@ -53,5 +74,5 @@ try {
   assert.equal(await admin.locator('#orders-section').isVisible(), false);
   await admin.screenshot({ path: 'outputs/netlify-qa/admin-sem-login.png' });
   await admin.close();
-  console.log('Netlify browser checks passed: real OCR/store submission, text-only pattern request, and private admin gate. WhatsApp not opened.');
+  console.log('Netlify browser checks passed: solar OCR/store, pattern with and without photo, and private admin gate. WhatsApp not opened.');
 } finally { await browser.close(); }
