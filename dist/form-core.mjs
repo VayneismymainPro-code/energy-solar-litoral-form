@@ -65,7 +65,7 @@ export function summaryRows(data, { photoStored = false } = {}) {
   return rows;
 }
 
-export function buildWhatsappUrl(data, { reference = '', photoStored = false } = {}) {
+export function buildWhatsappUrl(data, { photoStored = false } = {}) {
   const message = [
     '*Pedido de orçamento*',
     '',
@@ -92,6 +92,5 @@ export function buildWhatsappUrl(data, { reference = '', photoStored = false } =
     `• Melhor horário: ${data.bestTime || 'A combinar'}`
   );
   if (data.notes) message.push('', '*Observação*', data.notes);
-  if (reference) message.push('', `*Pedido:* ${reference}`);
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message.join('\n'))}`;
 }

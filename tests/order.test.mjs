@@ -39,7 +39,7 @@ test('solar stores a decoded bill only after OCR and returns a matching referenc
   const lifetime = Date.parse(record.expiresAt) - Date.parse(record.savedAt);
   assert.ok(lifetime >= 30 * 24 * 60 * 60 * 1000 - 1000 && lifetime <= 30 * 24 * 60 * 60 * 1000 + 1000);
   assert.match(new URL(result.whatsappUrl).searchParams.get('text'), /Conta enviada pelo formulário/);
-  assert.match(new URL(result.whatsappUrl).searchParams.get('text'), new RegExp(result.id));
+  assert.doesNotMatch(new URL(result.whatsappUrl).searchParams.get('text'), new RegExp(result.id));
 });
 
 test('solar photo with no bill text or broken OCR never reaches storage', async () => {

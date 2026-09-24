@@ -27,7 +27,7 @@ try {
   assert.match(await page.locator('#step-title').innerText(), /Pedido registrado/);
   const message = new URL(await page.locator('#send-whatsapp').getAttribute('href')).searchParams.get('text');
   assert.match(message, /Conta enviada pelo formulário/);
-  assert.match(message, /\*Pedido:\* [0-9a-f-]{36}/);
+  assert.doesNotMatch(message, /\*Pedido:\* [0-9a-f-]{36}/);
   await page.screenshot({ path: 'outputs/netlify-qa/solar-mobile-registrado.png', fullPage: true });
   await page.locator('#restart-button').click();
   await page.setViewportSize({ width: 1440, height: 900 });
