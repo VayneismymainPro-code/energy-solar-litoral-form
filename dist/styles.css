@@ -657,8 +657,23 @@ input[type="file"] {
 .privacy-page p, .privacy-page li { line-height: 1.65; }
 .privacy-page a { color: var(--ink); text-underline-offset: 3px; overflow-wrap: anywhere; }
 
-.customer-reviews { margin: 28px 0 0; padding: 24px 18px; border-top: 1px solid var(--line); text-align: center; }
-.customer-reviews h2 { margin: 0 0 10px; font-size: 1.2rem; line-height: 1.3; color: var(--ink); }
-.customer-reviews p { margin: 0 auto 12px; max-width: 440px; font-size: .9rem; line-height: 1.6; color: var(--muted); }
-.reviews-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 12px; color: var(--ink); font-size: .875rem; text-underline-offset: 4px; }
+.customer-reviews { margin: 46px 0 0; padding: 34px 0 10px; border-top: 1px solid var(--line); text-align: center; }
+.reviews-eyebrow { display: block; margin-bottom: 9px; color: var(--line-strong); font-size: .68rem; font-weight: 800; letter-spacing: .17em; }
+.customer-reviews h2 { margin: 0 0 10px; color: var(--ink); font-size: clamp(1.55rem, 4vw, 2rem); line-height: 1.2; letter-spacing: -.035em; }
+.customer-reviews > p { max-width: 490px; margin: 0 auto; color: var(--muted); font-size: .9rem; line-height: 1.65; }
+.review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 27px 0 15px; text-align: left; }
+.review-card { display: flex; flex-direction: column; min-width: 0; margin: 0; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: 0 12px 30px rgba(41, 42, 40, .035); }
+.review-card-featured { grid-column: 1 / -1; padding: 30px 34px; border-color: #d6c8a7; background: #fdfaf1; }
+.review-stars { margin-bottom: 14px; color: var(--line-strong); font-size: 1rem; letter-spacing: .11em; line-height: 1; }
+.review-card blockquote { margin: 0; color: var(--ink); font-size: .94rem; line-height: 1.7; overflow-wrap: anywhere; }
+.review-card-featured blockquote { font-size: 1.02rem; line-height: 1.72; }
+.review-card figcaption { margin-top: auto; padding-top: 22px; color: var(--ink); font-size: .84rem; font-weight: 750; }
+.review-card figcaption span { display: block; margin-top: 3px; color: var(--muted); font-size: .76rem; font-weight: 400; }
+.reviews-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 12px; color: var(--ink); font-size: .875rem; font-weight: 650; text-underline-offset: 4px; }
 .reviews-link:hover { text-decoration-thickness: 2px; }
+@media (max-width: 640px) {
+  .customer-reviews { margin-top: 36px; padding-top: 30px; }
+  .review-grid { grid-template-columns: 1fr; }
+  .review-card-featured { grid-column: auto; padding: 24px; }
+  .review-card { padding: 22px; }
+}
